@@ -1,5 +1,6 @@
 package server.unigo.service.serviceImp;
 
+import org.mapstruct.factory.Mappers;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
@@ -8,6 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import server.unigo.dto.NotificationsDTO;
+import server.unigo.dto.OverallNotificationsDTO;
+import server.unigo.map.NotificationMapper;
+import server.unigo.map.OverallNotificationMapper;
 import server.unigo.model.Notifications;
 import server.unigo.repository.NotificationRepository;
 import server.unigo.service.NotificationService;
@@ -45,8 +49,12 @@ public class NotificationServiceImp implements NotificationService {
         ModelMapper modelMapper = new ModelMapper();
         List<Notifications> notificationsList=notificationsDTOList.stream().map(t -> modelMapper.map(t, Notifications.class)).collect(Collectors.toList());
         notificationsList.forEach(t->notificationRepository.save(t));
-
-
-
+    }
+    public List<NotificationsDTO> getNotification() {
+        NotificationMapper notificationMapper= Mappers.getMapper(NotificationMapper.class);
+        List<NotificationsDTO> notificationsDTOList= notificationRepository.findAll().stream().map(t->
+                notificationMapper.mapEntityToDTo(t)
+        ).collect(Collectors.toList());
+        return notificationsDTOList;
     }
 }

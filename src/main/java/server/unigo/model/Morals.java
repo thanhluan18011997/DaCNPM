@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToOne;
 
 @Getter
@@ -24,6 +25,6 @@ public class Morals extends BaseEntity {
     Double savedCredits;
     Double avgSavedCreditB4;
     Double avgMoral;
-    @OneToOne()
+    @OneToOne(fetch = FetchType.LAZY)
     PersonalInformations personalInformation;
 }

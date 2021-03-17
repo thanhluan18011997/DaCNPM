@@ -1,4 +1,4 @@
-package server.unigo.Map;
+package server.unigo.map;
 
 import org.mapstruct.Mapper;
 import server.unigo.dto.StudyResultsDTO;

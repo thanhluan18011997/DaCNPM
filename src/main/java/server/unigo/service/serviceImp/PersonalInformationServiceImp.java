@@ -6,7 +6,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-import server.unigo.Map.PersonalInformationMapper;
+import server.unigo.map.PersonalInformationMapper;
 import server.unigo.dto.PersonalInformationsDTO;
 import server.unigo.model.PersonalInformations;
 import server.unigo.repository.PersonalInformationRepository;
@@ -29,28 +29,27 @@ public class PersonalInformationServiceImp implements PersonalInformationService
     }
 
     @Override
-    public void savePersonalInformation() {
+    public void savePersonalInformation(String id) {
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
         HttpEntity<PersonalInformationsDTO> entity = new HttpEntity<>(headers);
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("https://dnunigo.herokuapp.com/dut/")
                 .queryParam("command", "get_personal_information")
-                .queryParam("session_id", "102170100")
+                .queryParam("session_id", id)
                 .queryParam("semester_id", "2010");
         ResponseEntity<PersonalInformationsDTO> responseEntity = restTemplate.exchange(builder.toUriString(), HttpMethod.POST, entity, PersonalInformationsDTO.class);
         PersonalInformationsDTO personalInformationsDTO = responseEntity.getBody();
         PersonalInformationMapper personalInformationMapper = Mappers.getMapper(PersonalInformationMapper.class);
         PersonalInformations personalInformations = personalInformationMapper.mapDTOtoEntity(personalInformationsDTO);
-//        ModelMapper modelMapper = new ModelMapper();
-//        PersonalInformations personalInformations=modelMapper.map(personalInformationsDTO, PersonalInformations.class);
+        personalInformationRepository.save(personalInformations);
+    }
 
-        Optional<PersonalInformations> personalInformations1 = personalInformationRepository.findByStudentId(personalInformations.getStudentId());
-        if (personalInformations1.isPresent())
-        {
-            personalInformations.setId(personalInformations1.get().getId());
-            personalInformationRepository.save(personalInformations);
-        }
-
-        else
-            personalInformationRepository.save(personalInformations);
-    }}
+    @Override
+    public PersonalInformationsDTO getPersonalInformations(String id) {
+        PersonalInformationMapper personalInformationMapper = Mappers.getMapper(PersonalInformationMapper.class);
+        Optional<PersonalInformations> personalInformations = personalInformationRepository.findByStudentId(id);
+        if(personalInformations.isPresent())
+            return personalInformationMapper.mapEntityToDTo(personalInformations.get());
+        return null;
+    }
+}

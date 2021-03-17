@@ -7,6 +7,6 @@ import server.unigo.model.PersonalInformations;
 import java.util.Optional;
 
 @Repository
-public interface PersonalInformationRepository extends JpaRepository<PersonalInformations,Long> {
+public interface PersonalInformationRepository extends JpaRepository<PersonalInformations,String> {
     public Optional<PersonalInformations> findByStudentId(String studentId);
 }

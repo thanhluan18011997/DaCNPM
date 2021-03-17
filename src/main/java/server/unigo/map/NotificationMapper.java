@@ -1,9 +1,7 @@
-package server.unigo.Map;
+package server.unigo.map;
 
 import org.mapstruct.Mapper;
-import server.unigo.dto.DetailSchedulesDTO;
 import server.unigo.dto.NotificationsDTO;
-import server.unigo.model.DetailSchedules;
 import server.unigo.model.Notifications;
 
 @Mapper

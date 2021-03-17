@@ -20,5 +20,5 @@ public class DetailSchedulesDTO  {
     String room;
 //    WeeklySchedules weeklySchedules;
     @JsonProperty("study_time")
-    Set<Long> studyTime;
+    Set<StudyTimesDTO> studyTime;
 }

@@ -1,9 +1,7 @@
-package server.unigo.Map;
+package server.unigo.map;
 
 import org.mapstruct.Mapper;
-import server.unigo.dto.StudyResultsDTO;
 import server.unigo.dto.TestsDTO;
-import server.unigo.model.StudyResults;
 import server.unigo.model.Tests;
 
 @Mapper
