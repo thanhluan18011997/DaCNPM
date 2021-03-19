@@ -13,16 +13,21 @@ import java.util.List;
 @RestController
 public class ScheduleController {
     private final ScheduleService scheduleService;
-@Autowired
+
+    @Autowired
     public ScheduleController(ScheduleService scheduleService) {
         this.scheduleService = scheduleService;
     }
+
+    //  Call student Schedule data from https://dnunigo.herokuapp.com/dut/ Crawler server, then save data into DB
     @PostMapping("saveSchedule/{id}")
-    public void saveSchedule(@PathVariable String id){
-    scheduleService.saveSchedule(id);
+    public void saveSchedule(@PathVariable String id) {
+        scheduleService.saveSchedule(id);
     }
+
+    //  Get Schedule data for client
     @GetMapping("getSchedule/{id}")
-    public List<SchedulesDTO> getSchedule(@PathVariable String id){
-    return scheduleService.getSchedule(id);
+    public List<SchedulesDTO> getSchedule(@PathVariable String id) {
+        return scheduleService.getSchedule(id);
     }
 }

@@ -47,12 +47,14 @@ public class NotificationServiceImp implements NotificationService {
                 });
         List<NotificationsDTO> notificationsDTOList = responseEntity.getBody();
         ModelMapper modelMapper = new ModelMapper();
-        List<Notifications> notificationsList=notificationsDTOList.stream().map(t -> modelMapper.map(t, Notifications.class)).collect(Collectors.toList());
-        notificationsList.forEach(t->notificationRepository.save(t));
+        List<Notifications> notificationsList = notificationsDTOList.stream()
+                .map(t -> modelMapper.map(t, Notifications.class)).collect(Collectors.toList());
+        notificationsList.forEach(t -> notificationRepository.save(t));
     }
+
     public List<NotificationsDTO> getNotification() {
-        NotificationMapper notificationMapper= Mappers.getMapper(NotificationMapper.class);
-        List<NotificationsDTO> notificationsDTOList= notificationRepository.findAll().stream().map(t->
+        NotificationMapper notificationMapper = Mappers.getMapper(NotificationMapper.class);
+        List<NotificationsDTO> notificationsDTOList = notificationRepository.findAll().stream().map(t ->
                 notificationMapper.mapEntityToDTo(t)
         ).collect(Collectors.toList());
         return notificationsDTOList;

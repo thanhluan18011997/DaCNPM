@@ -13,16 +13,21 @@ import java.util.List;
 @RestController
 public class NotificationController {
     private final NotificationService notificationService;
-@Autowired
+
+    @Autowired
     public NotificationController(NotificationService notificationService) {
         this.notificationService = notificationService;
     }
-@PostMapping("saveNotification")
-    public void saveNotification(){
+
+    //  Call student notification data from https://dnunigo.herokuapp.com/dut/ Crawler server, then save data into DB
+    @PostMapping("saveNotification")
+    public void saveNotification() {
         notificationService.saveNotification();
     }
+
+    //  Get notification data for client
     @GetMapping("getNotification")
-    public List<NotificationsDTO> getNotification(){
+    public List<NotificationsDTO> getNotification() {
         return notificationService.getNotification();
     }
 }

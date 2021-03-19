@@ -53,21 +53,21 @@ public class TestServiceImp implements TestService {
         List<Tests> testsList = testsDTOList.stream().map(t -> modelMapper.map(t, Tests.class)).collect(Collectors.toList());
         testsList.forEach(
                 t -> {
-                    Optional<Tests> testsOptional =testRepository.findByPersonalInformationIdAndCourseCode(id, t.getCourseCode());
+                    Optional<Tests> testsOptional = testRepository.findByPersonalInformationIdAndCourseCode(id, t.getCourseCode());
                     if (testsOptional.isPresent())
                         t.setId(testsOptional.get().getId());
                     t.setPersonalInformation(personalInformationRepository.getOne(id));
                     testRepository.save(t);
                 }
-                );
+        );
 
     }
 
     @Override
     public List<TestsDTO> getTest(String id) {
-        TestMapper testMapper= Mappers.getMapper(TestMapper.class);
-        return   testRepository.findByPersonalInformationID(id).get().stream().map(t->
-            testMapper.mapEntityToDTo(t)
+        TestMapper testMapper = Mappers.getMapper(TestMapper.class);
+        return testRepository.findByPersonalInformationID(id).get().stream().map(t ->
+                testMapper.mapEntityToDTo(t)
         ).collect(Collectors.toList());
 
     }

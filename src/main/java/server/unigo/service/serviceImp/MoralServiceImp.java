@@ -24,12 +24,13 @@ public class MoralServiceImp implements MoralService {
     private final MoralRepository moralRepository;
     private final RestTemplate restTemplate;
     private final PersonalInformationRepository personalInformationRepository;
-@Autowired
+
+    @Autowired
     public MoralServiceImp(MoralRepository moralRepository, RestTemplate restTemplate, PersonalInformationRepository personalInformationRepository) {
         this.moralRepository = moralRepository;
         this.restTemplate = restTemplate;
-    this.personalInformationRepository = personalInformationRepository;
-}
+        this.personalInformationRepository = personalInformationRepository;
+    }
 
     @Override
     public void saveMoral(String id) {
@@ -46,21 +47,22 @@ public class MoralServiceImp implements MoralService {
                 new ParameterizedTypeReference<List<MoralsDTO>>() {
                 });
         List<MoralsDTO> moralsDTOList = responseEntity.getBody();
-        MoralMapper moralMapper= Mappers.getMapper(MoralMapper.class);
-        List<Morals> moralsList=moralsDTOList.stream().map(t->moralMapper.mapDTOtoEntity(t)).collect(Collectors.toList());
-        moralsList.forEach(t->{
-            Optional<Morals> moralsOptional=moralRepository.findBySemesterAndPersonalInformationId(id,t.getSemester());
+        MoralMapper moralMapper = Mappers.getMapper(MoralMapper.class);
+        List<Morals> moralsList = moralsDTOList.stream()
+                .map(t -> moralMapper.mapDTOtoEntity(t)).collect(Collectors.toList());
+        moralsList.forEach(t -> {
+            Optional<Morals> moralsOptional = moralRepository.findBySemesterAndPersonalInformationId(id, t.getSemester());
             if (moralsOptional.isPresent())
                 t.setId(moralsOptional.get().getId());
             t.setPersonalInformation(personalInformationRepository.getOne(id));
-                moralRepository.save(t);
+            moralRepository.save(t);
 
         });
     }
 
     @Override
     public List<MoralsDTO> getMoral(String id) {
-        MoralMapper moralMapper= Mappers.getMapper(MoralMapper.class);
-        return moralRepository.findAll().stream().map(t->moralMapper.mapEntityToDTo(t)).collect(Collectors.toList());
+        MoralMapper moralMapper = Mappers.getMapper(MoralMapper.class);
+        return moralRepository.findAll().stream().map(t -> moralMapper.mapEntityToDTo(t)).collect(Collectors.toList());
     }
 }

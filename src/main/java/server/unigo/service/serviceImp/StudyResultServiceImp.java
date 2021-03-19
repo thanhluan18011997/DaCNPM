@@ -25,17 +25,18 @@ public class StudyResultServiceImp implements StudyResultService {
     private final StudyResultRepository studyResultRepository;
     private final PersonalInformationRepository personalInformationRepository;
     private final RestTemplate restTemplate;
-@Autowired
+
+    @Autowired
     public StudyResultServiceImp(StudyResultRepository studyResultRepository, PersonalInformationRepository personalInformationRepository, RestTemplate restTemplate) {
         this.studyResultRepository = studyResultRepository;
-    this.personalInformationRepository = personalInformationRepository;
-    this.restTemplate = restTemplate;
+        this.personalInformationRepository = personalInformationRepository;
+        this.restTemplate = restTemplate;
     }
 
     @Override
     public List<StudyResultsDTO> getStudyResult(String id) {
-        StudyResultMapper studyResultMapper= Mappers.getMapper(StudyResultMapper.class);
-        return studyResultRepository.findByPersonalInformationID(id).get().stream().map(t->studyResultMapper.mapEntityToDTo(t)).collect(Collectors.toList());
+        StudyResultMapper studyResultMapper = Mappers.getMapper(StudyResultMapper.class);
+        return studyResultRepository.findByPersonalInformationID(id).get().stream().map(t -> studyResultMapper.mapEntityToDTo(t)).collect(Collectors.toList());
 
     }
 
@@ -56,15 +57,16 @@ public class StudyResultServiceImp implements StudyResultService {
                 });
         List<StudyResultsDTO> studyResultsDTOList = responseEntity.getBody();
         ModelMapper modelMapper = new ModelMapper();
-        List<StudyResults> studyResultsList = studyResultsDTOList.stream().map(t -> modelMapper.map(t, StudyResults.class)).collect(Collectors.toList());
+        List<StudyResults> studyResultsList = studyResultsDTOList.stream()
+                .map(t -> modelMapper.map(t, StudyResults.class)).collect(Collectors.toList());
 
         studyResultsList.forEach(t -> {
-            Optional<StudyResults>studyResultsOptional=studyResultRepository.findByPersonalInformationIdAndCourseCode(id, t.getCourseCode());
+            Optional<StudyResults> studyResultsOptional = studyResultRepository.findByPersonalInformationIdAndCourseCode(id, t.getCourseCode());
             if (studyResultsOptional.isPresent())
                 t.setId(studyResultsOptional.get().getId());
             t.setPersonalInformation(personalInformationRepository.getOne(id));
             studyResultRepository.save(t);
         });
-        return  studyResultsList;
+        return studyResultsList;
     }
 }

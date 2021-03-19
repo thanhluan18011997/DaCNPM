@@ -14,16 +14,21 @@ import java.util.List;
 @RestController
 public class TestController {
     private final TestService testService;
-@Autowired
+
+    @Autowired
     public TestController(TestService testService) {
         this.testService = testService;
     }
+
+    //  Call student test data from https://dnunigo.herokuapp.com/dut/ Crawler server, then save data into DB
     @PostMapping("saveTest/{id}")
-    public void saveTest(@PathVariable String id){
-    testService.saveTest(id);
+    public void saveTest(@PathVariable String id) {
+        testService.saveTest(id);
     }
+
+    //  Get Test data for client
     @GetMapping("getTest/{id}")
-    public List<TestsDTO> getTest(@PathVariable String id){
-    return testService.getTest(id);
+    public List<TestsDTO> getTest(@PathVariable String id) {
+        return testService.getTest(id);
     }
 }

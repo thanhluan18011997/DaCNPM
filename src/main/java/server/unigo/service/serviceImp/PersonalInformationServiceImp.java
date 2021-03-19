@@ -18,13 +18,11 @@ import java.util.Optional;
 @Service
 public class PersonalInformationServiceImp implements PersonalInformationService {
     private final RestTemplate restTemplate;
-//    private final Timer timer;
     private final PersonalInformationRepository personalInformationRepository;
 
-@Autowired
+    @Autowired
     public PersonalInformationServiceImp(RestTemplate restTemplate, PersonalInformationRepository personalInformationRepository) {
         this.restTemplate = restTemplate;
-//        this.timer = timer;
         this.personalInformationRepository = personalInformationRepository;
     }
 
@@ -48,7 +46,7 @@ public class PersonalInformationServiceImp implements PersonalInformationService
     public PersonalInformationsDTO getPersonalInformations(String id) {
         PersonalInformationMapper personalInformationMapper = Mappers.getMapper(PersonalInformationMapper.class);
         Optional<PersonalInformations> personalInformations = personalInformationRepository.findByStudentId(id);
-        if(personalInformations.isPresent())
+        if (personalInformations.isPresent())
             return personalInformationMapper.mapEntityToDTo(personalInformations.get());
         return null;
     }

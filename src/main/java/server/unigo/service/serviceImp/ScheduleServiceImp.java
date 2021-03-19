@@ -105,18 +105,13 @@ public class ScheduleServiceImp implements ScheduleService {
                 });
             });
             schedules1.setWeeklySchedules(weeklySchedules1);
-
-
         }
-
-
     }
 
     @Override
     public List<SchedulesDTO> getSchedule(String id) {
-        ScheduleMapper scheduleMapper=Mappers.getMapper(ScheduleMapper.class);
-
-
-        return scheduleRepository.findByPersonalInformationID(id).get().stream().map(t->scheduleMapper.mapEntityToDTo(t)).collect(Collectors.toList());
+        ScheduleMapper scheduleMapper = Mappers.getMapper(ScheduleMapper.class);
+        return scheduleRepository.findByPersonalInformationID(id).get().stream()
+                .map(t -> scheduleMapper.mapEntityToDTo(t)).collect(Collectors.toList());
     }
 }

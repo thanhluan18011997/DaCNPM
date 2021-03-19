@@ -13,16 +13,21 @@ import java.util.List;
 @RestController
 public class OverallNotificationController {
     private final OverallNotificationService overallNotificationService;
-@Autowired
+
+    @Autowired
     public OverallNotificationController(OverallNotificationService overallNotificationService) {
         this.overallNotificationService = overallNotificationService;
     }
-@PostMapping("saveOverallNotification")
-    public void saveOverallNotification(){
-    overallNotificationService.saveOverallNotification();
+
+    //  Call overall notification data from https://dnunigo.herokuapp.com/dut/ Crawler server, then save data into DB
+    @PostMapping("saveOverallNotification")
+    public void saveOverallNotification() {
+        overallNotificationService.saveOverallNotification();
     }
+
+    //  Get notification data for client
     @GetMapping("getOverallNotification")
-    public List<OverallNotificationsDTO> getOverallNotification(){
-    return overallNotificationService.getOverallNotification();
+    public List<OverallNotificationsDTO> getOverallNotification() {
+        return overallNotificationService.getOverallNotification();
     }
 }

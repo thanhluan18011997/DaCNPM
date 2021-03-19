@@ -50,23 +50,21 @@ public class OverallNotificationServiceImp implements OverallNotificationService
                 });
         List<OverallNotificationsDTO> notificationsDTOList = responseEntity.getBody();
         ModelMapper modelMapper = new ModelMapper();
-        List<OverallNotifications> notificationsList=notificationsDTOList.stream().map(t->modelMapper.map(t, OverallNotifications.class)).collect(Collectors.toList());
-        notificationsList.forEach(t->{
-            Optional<OverallNotifications> overallNotificationsOptional=notificationRepository.findByTitle(t.getTitle());
-            if(overallNotificationsOptional.isPresent())
+        List<OverallNotifications> notificationsList = notificationsDTOList.stream().
+                map(t -> modelMapper.map(t, OverallNotifications.class)).collect(Collectors.toList());
+        notificationsList.forEach(t -> {
+            Optional<OverallNotifications> overallNotificationsOptional = notificationRepository.findByTitle(t.getTitle());
+            if (overallNotificationsOptional.isPresent())
                 t.setId(overallNotificationsOptional.get().getId());
             notificationRepository.save(t);
         });
-
-
-
     }
 
     @Override
-    public List<OverallNotificationsDTO>    getOverallNotification() {
-        OverallNotificationMapper overallNotificationMapper= Mappers.getMapper(OverallNotificationMapper.class);
+    public List<OverallNotificationsDTO> getOverallNotification() {
+        OverallNotificationMapper overallNotificationMapper = Mappers.getMapper(OverallNotificationMapper.class);
 
-        List<OverallNotificationsDTO> overallNotificationsDTOList= notificationRepository.findAll().stream().map(t->
+        List<OverallNotificationsDTO> overallNotificationsDTOList = notificationRepository.findAll().stream().map(t ->
                 overallNotificationMapper.mapEntityToDTo(t)
         ).collect(Collectors.toList());
         return overallNotificationsDTOList;

@@ -16,12 +16,15 @@ public class PersonalInformationController {
         this.personalInformationService = personalInformationService;
     }
 
+    //  Call student PersonalInformation data from https://dnunigo.herokuapp.com/dut/ Crawler server, then save data into DB
     @PostMapping("savePersonalInformation/{id}")
     public void savePersonalInformation(@PathVariable String id) {
         personalInformationService.savePersonalInformation(id);
     }
+
+    //  Get PersonalInformation data for client
     @GetMapping("getPersonalInformation/{id}")
-    public PersonalInformationsDTO getPersonalInformation(@PathVariable String id){
+    public PersonalInformationsDTO getPersonalInformation(@PathVariable String id) {
         return personalInformationService.getPersonalInformations(id);
     }
 }

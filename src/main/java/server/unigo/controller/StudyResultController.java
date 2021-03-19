@@ -17,10 +17,13 @@ public class StudyResultController {
     public StudyResultController(StudyResultService studyResultService) {
         this.studyResultService = studyResultService;
     }
+    //  Call student StudyResult data from https://dnunigo.herokuapp.com/dut/ Crawler server, then save data into DB
     @PostMapping("saveStudyResult/{id}")
     public void saveStudentResult(@PathVariable String id){
         studyResultService.saveStudentResult(id);
     }
+
+    //  Get StudyResults data for client
     @GetMapping("getStudyResults/{id}")
     public List<StudyResultsDTO> getStudyResults(@PathVariable String id){
     return studyResultService.getStudyResult(id);
