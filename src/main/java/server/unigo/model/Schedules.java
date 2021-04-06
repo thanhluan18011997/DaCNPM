@@ -6,10 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import server.unigo.dto.WeeklySchedulesDTO;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 
 @Getter
 @Setter
@@ -24,6 +21,6 @@ public class Schedules extends BaseEntity {
     String studyWeeks;
     @ManyToOne()
     PersonalInformations personalInformation;
-    @OneToOne(mappedBy = "schedules",cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "schedules",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     WeeklySchedules weeklySchedules;
 }

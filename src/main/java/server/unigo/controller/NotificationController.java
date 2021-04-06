@@ -20,13 +20,13 @@ public class NotificationController {
     }
 
     //  Call student notification data from https://dnunigo.herokuapp.com/dut/ Crawler server, then save data into DB
-    @PostMapping("saveNotification")
+    @PostMapping("v1/notifications")
     public void saveNotification() {
         notificationService.saveNotification();
     }
 
     //  Get notification data for client
-    @GetMapping("getNotification")
+    @GetMapping("v1/notifications")
     public List<NotificationsDTO> getNotification() {
         return notificationService.getNotification();
     }

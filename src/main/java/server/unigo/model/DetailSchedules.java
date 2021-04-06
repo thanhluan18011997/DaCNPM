@@ -17,6 +17,6 @@ public class DetailSchedules extends BaseEntity {
     String room;
     @ManyToOne
     WeeklySchedules weeklySchedule;
-    @OneToMany(mappedBy = "detailSchedule",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "detailSchedule",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     Set<StudyTimes> studyTime;
 }

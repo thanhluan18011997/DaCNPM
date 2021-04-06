@@ -19,7 +19,7 @@ import java.util.Set;
 @Entity
 public class WeeklySchedules extends BaseEntity {
     String raw;
-    @OneToMany(mappedBy ="weeklySchedule",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy ="weeklySchedule",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     Set<DetailSchedules> detailSchedules;
     @OneToOne
     Schedules schedules;

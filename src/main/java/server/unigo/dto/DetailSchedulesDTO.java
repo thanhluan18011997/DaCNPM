@@ -18,7 +18,6 @@ import java.util.Set;
 public class DetailSchedulesDTO  {
     Long weekday;
     String room;
-//    WeeklySchedules weeklySchedules;
     @JsonProperty("study_time")
     Set<StudyTimesDTO> studyTime;
 }

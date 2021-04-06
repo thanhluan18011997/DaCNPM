@@ -21,13 +21,13 @@ public class TestController {
     }
 
     //  Call student test data from https://dnunigo.herokuapp.com/dut/ Crawler server, then save data into DB
-    @PostMapping("saveTest/{id}")
+    @PostMapping("v1/tests/{id}")
     public void saveTest(@PathVariable String id) {
         testService.saveTest(id);
     }
 
     //  Get Test data for client
-    @GetMapping("getTest/{id}")
+    @GetMapping("v1/tests/{id}")
     public List<TestsDTO> getTest(@PathVariable String id) {
         return testService.getTest(id);
     }

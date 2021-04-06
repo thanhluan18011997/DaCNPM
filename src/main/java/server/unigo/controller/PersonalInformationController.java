@@ -1,7 +1,9 @@
 package server.unigo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import server.unigo.dto.PersonalInformationsDTO;
 import server.unigo.dto.UserDTO;
 import server.unigo.model.PersonalInformations;
@@ -17,14 +19,17 @@ public class PersonalInformationController {
     }
 
     //  Call student PersonalInformation data from https://dnunigo.herokuapp.com/dut/ Crawler server, then save data into DB
-    @PostMapping("savePersonalInformation/{id}")
+    @PostMapping("v1/personal_informations/{id}")
     public void savePersonalInformation(@PathVariable String id) {
         personalInformationService.savePersonalInformation(id);
     }
 
     //  Get PersonalInformation data for client
-    @GetMapping("getPersonalInformation/{id}")
+    @GetMapping("v1/personal_informations/{id}")
     public PersonalInformationsDTO getPersonalInformation(@PathVariable String id) {
-        return personalInformationService.getPersonalInformations(id);
+        PersonalInformationsDTO personalInformationsDTO=personalInformationService.getPersonalInformations(id);
+        if (personalInformationsDTO==null)
+            throw  new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found id");
+        return personalInformationsDTO;
     }
 }

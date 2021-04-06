@@ -20,13 +20,13 @@ public class ScheduleController {
     }
 
     //  Call student Schedule data from https://dnunigo.herokuapp.com/dut/ Crawler server, then save data into DB
-    @PostMapping("saveSchedule/{id}")
+    @PostMapping("v1/schedules/{id}")
     public void saveSchedule(@PathVariable String id) {
         scheduleService.saveSchedule(id);
     }
 
     //  Get Schedule data for client
-    @GetMapping("getSchedule/{id}")
+    @GetMapping("v1/schedules/{id}")
     public List<SchedulesDTO> getSchedule(@PathVariable String id) {
         return scheduleService.getSchedule(id);
     }

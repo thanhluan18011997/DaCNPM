@@ -20,13 +20,13 @@ public class MoralController {
     }
 
     //  Call student moral data from https://dnunigo.herokuapp.com/dut/ Crawler server, then save data into DB
-    @PostMapping("saveMoral/{id}")
+    @PostMapping("v1/morals/{id}")
     public void saveMoral(@PathVariable String id) {
         moralService.saveMoral(id);
     }
 
     //  Get student moral data for client
-    @GetMapping("getMoral/{id}")
+    @GetMapping("v1/morals/{id}")
     public List<MoralsDTO> getMoral(@PathVariable String id) {
         return moralService.getMoral(id);
     }

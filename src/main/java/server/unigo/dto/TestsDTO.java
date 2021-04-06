@@ -5,6 +5,9 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 @Setter
 @Getter
 public class TestsDTO {
@@ -18,6 +21,7 @@ public class TestsDTO {
     String testGroup;
     @JsonProperty("test_grouping")
     String testGrouping;
+    @NotBlank
     @JsonProperty("test_schedule")
     String testSchedule;
 }

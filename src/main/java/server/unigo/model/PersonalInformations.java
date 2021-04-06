@@ -23,13 +23,13 @@ public class PersonalInformations  {
     String medicalId;
     String medicalIdEnd;
     String personalImage;
-    @OneToMany(mappedBy = "personalInformation",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "personalInformation",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     Set<Schedules> schedulesSet;
-    @OneToMany(mappedBy = "personalInformation",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "personalInformation",cascade = CascadeType.ALL ,fetch = FetchType.LAZY)
     Set<Tests> testsSet;
-    @OneToMany(mappedBy = "personalInformation",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "personalInformation",cascade = CascadeType.ALL ,fetch = FetchType.LAZY)
     Set<StudyResults> studyResultsSet;
-    @OneToOne(mappedBy = "personalInformation",fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "personalInformation",fetch = FetchType.LAZY )
     Morals moral;
 
 }

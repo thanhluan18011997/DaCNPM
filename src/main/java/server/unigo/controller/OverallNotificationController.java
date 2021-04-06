@@ -20,13 +20,13 @@ public class OverallNotificationController {
     }
 
     //  Call overall notification data from https://dnunigo.herokuapp.com/dut/ Crawler server, then save data into DB
-    @PostMapping("saveOverallNotification")
+    @PostMapping("v1/overall_notifications")
     public void saveOverallNotification() {
         overallNotificationService.saveOverallNotification();
     }
 
     //  Get notification data for client
-    @GetMapping("getOverallNotification")
+    @GetMapping("v1/overall_notifications")
     public List<OverallNotificationsDTO> getOverallNotification() {
         return overallNotificationService.getOverallNotification();
     }
