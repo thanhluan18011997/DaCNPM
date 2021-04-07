@@ -8,14 +8,10 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-import server.unigo.dto.NotificationsDTO;
 import server.unigo.dto.OverallNotificationsDTO;
 import server.unigo.map.OverallNotificationMapper;
-import server.unigo.model.Notifications;
 import server.unigo.model.OverallNotifications;
-import server.unigo.repository.NotificationRepository;
 import server.unigo.repository.OverallNotificationRepository;
-import server.unigo.service.NotificationService;
 import server.unigo.service.OverallNotificationService;
 
 import java.util.Arrays;

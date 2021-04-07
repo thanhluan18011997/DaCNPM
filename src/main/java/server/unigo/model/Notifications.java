@@ -11,6 +11,6 @@ import javax.persistence.Entity;
 @NoArgsConstructor
 @Entity
 public class Notifications extends BaseEntity {
-    String title;
-    String content;
+    private String title;
+    private String content;
 }

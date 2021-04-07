@@ -12,24 +12,25 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 public class PersonalInformations  {
-    String studentName;
+    private String studentName;
     @Id
-    String studentId;
-    String className;
-    String personalEmail;
-    String phone;
-    String birthday;
-    String schoolMail;
-    String medicalId;
-    String medicalIdEnd;
-    String personalImage;
+    private String studentId;
+    private String className;
+    private String personalEmail;
+    private String phone;
+    private String birthday;
+    private String schoolMail;
+    private String medicalId;
+    private String medicalIdEnd;
+    private String personalImage;
     @OneToMany(mappedBy = "personalInformation",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    Set<Schedules> schedulesSet;
+    private Set<Schedules> schedulesSet;
     @OneToMany(mappedBy = "personalInformation",cascade = CascadeType.ALL ,fetch = FetchType.LAZY)
-    Set<Tests> testsSet;
-    @OneToMany(mappedBy = "personalInformation",cascade = CascadeType.ALL ,fetch = FetchType.LAZY)
-    Set<StudyResults> studyResultsSet;
+    private Set<Tests> testsSet;
+     @OneToMany(mappedBy = "personalInformation",cascade = CascadeType.ALL ,fetch = FetchType.LAZY)
+    private Set<StudyResults> studyResultsSet;
     @OneToOne(mappedBy = "personalInformation",fetch = FetchType.LAZY )
-    Morals moral;
+    @Transient
+    private Morals moral;
 
 }

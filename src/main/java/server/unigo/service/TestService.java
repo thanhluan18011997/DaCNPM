@@ -7,7 +7,7 @@ import server.unigo.model.Tests;
 
 import java.util.List;
 
-@Service
+
 public interface TestService {
     void saveTest(String id);
     List<TestsDTO> getTest(String id);

@@ -18,9 +18,9 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 public class WeeklySchedules extends BaseEntity {
-    String raw;
+    private String raw;
     @OneToMany(mappedBy ="weeklySchedule",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    Set<DetailSchedules> detailSchedules;
+    private Set<DetailSchedules> detailSchedules;
     @OneToOne
-    Schedules schedules;
+    private Schedules schedules;
 }

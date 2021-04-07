@@ -5,9 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
-import server.unigo.map.PersonalInformationMapper;
 import server.unigo.dto.PersonalInformationsDTO;
+import server.unigo.map.PersonalInformationMapper;
 import server.unigo.model.PersonalInformations;
 import server.unigo.repository.PersonalInformationRepository;
 import server.unigo.service.PersonalInformationService;
@@ -48,6 +49,8 @@ public class PersonalInformationServiceImp implements PersonalInformationService
         Optional<PersonalInformations> personalInformations = personalInformationRepository.findByStudentId(id);
         if (personalInformations.isPresent())
             return personalInformationMapper.mapEntityToDTo(personalInformations.get());
-        return null;
+        else
+            throw  new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found id");
+
     }
 }

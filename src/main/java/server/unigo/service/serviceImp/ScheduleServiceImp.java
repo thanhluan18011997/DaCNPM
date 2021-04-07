@@ -7,11 +7,12 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
-import server.unigo.dto.StudyTimesDTO;
-import server.unigo.map.ScheduleMapper;
 import server.unigo.dto.DetailSchedulesDTO;
 import server.unigo.dto.SchedulesDTO;
+import server.unigo.dto.StudyTimesDTO;
+import server.unigo.map.ScheduleMapper;
 import server.unigo.map.StudyTimeMapper;
 import server.unigo.model.*;
 import server.unigo.repository.*;
@@ -110,6 +111,9 @@ public class ScheduleServiceImp implements ScheduleService {
 
     @Override
     public List<SchedulesDTO> getSchedule(String id) {
+        Optional<PersonalInformations> personalInformations = personalInformationRepository.findByStudentId(id);
+        if (!personalInformations.isPresent())
+            throw  new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found id");
         ScheduleMapper scheduleMapper = Mappers.getMapper(ScheduleMapper.class);
         return scheduleRepository.findByPersonalInformationID(id).get().stream()
                 .map(t -> scheduleMapper.mapEntityToDTo(t)).collect(Collectors.toList());

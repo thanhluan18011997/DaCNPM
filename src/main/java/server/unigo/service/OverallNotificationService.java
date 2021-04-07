@@ -7,7 +7,7 @@ import server.unigo.model.OverallNotifications;
 
 import java.util.List;
 
-@Service
+
 public interface OverallNotificationService {
     void saveOverallNotification();
     List<OverallNotificationsDTO> getOverallNotification();

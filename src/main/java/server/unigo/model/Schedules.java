@@ -13,14 +13,14 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 public class Schedules extends BaseEntity {
-    Long index_;
-    String courseCode;
-    String courseName;
-    Double credit;
-    String teacher;
-    String studyWeeks;
+    private Long index_;
+    private String courseCode;
+    private String courseName;
+    private Double credit;
+    private String teacher;
+    private String studyWeeks;
     @ManyToOne()
-    PersonalInformations personalInformation;
+    private PersonalInformations personalInformation;
     @OneToOne(mappedBy = "schedules",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    WeeklySchedules weeklySchedules;
+    private WeeklySchedules weeklySchedules;
 }

@@ -16,12 +16,12 @@ import javax.validation.constraints.NotNull;
 @Entity
 public class Tests extends BaseEntity {
 
-    Long index_;
-    String courseCode;
-    String courseName;
-    String testGroup;
-    String testGrouping;
-    String testSchedule;
+    private Long index_;
+    private String courseCode;
+    private String courseName;
+    private String testGroup;
+    private String testGrouping;
+    private String testSchedule;
     @ManyToOne()
-    PersonalInformations personalInformation;
+    private PersonalInformations personalInformation;
 }

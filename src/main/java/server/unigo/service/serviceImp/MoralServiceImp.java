@@ -6,10 +6,12 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 import server.unigo.map.MoralMapper;
 import server.unigo.dto.MoralsDTO;
 import server.unigo.model.Morals;
+import server.unigo.model.PersonalInformations;
 import server.unigo.repository.MoralRepository;
 import server.unigo.repository.PersonalInformationRepository;
 import server.unigo.service.MoralService;
@@ -62,6 +64,9 @@ public class MoralServiceImp implements MoralService {
 
     @Override
     public List<MoralsDTO> getMoral(String id) {
+        Optional<PersonalInformations> personalInformations = personalInformationRepository.findByStudentId(id);
+        if (!personalInformations.isPresent())
+            throw  new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found id");
         MoralMapper moralMapper = Mappers.getMapper(MoralMapper.class);
         return moralRepository.findAll().stream().map(t -> moralMapper.mapEntityToDTo(t)).collect(Collectors.toList());
     }

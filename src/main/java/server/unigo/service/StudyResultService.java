@@ -7,7 +7,7 @@ import server.unigo.model.StudyResults;
 
 import java.util.List;
 
-@Service
+
 public interface StudyResultService {
     List<StudyResultsDTO> getStudyResult(String id);
     List<StudyResults> saveStudentResult(String id);

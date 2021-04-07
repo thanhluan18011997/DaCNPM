@@ -13,10 +13,10 @@ import java.util.Set;
 @Entity
 
 public class DetailSchedules extends BaseEntity {
-    Long weekday;
-    String room;
+    private Long weekday;
+    private String room;
     @ManyToOne
-    WeeklySchedules weeklySchedule;
+    private WeeklySchedules weeklySchedule;
     @OneToMany(mappedBy = "detailSchedule",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    Set<StudyTimes> studyTime;
+    private Set<StudyTimes> studyTime;
 }

@@ -1,16 +1,17 @@
 package server.unigo.controller;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import server.unigo.dto.NotificationsDTO;
-import server.unigo.dto.OverallNotificationsDTO;
 import server.unigo.service.NotificationService;
 
 import java.util.List;
 
 @RestController
+@Log4j2
 public class NotificationController {
     private final NotificationService notificationService;
 
@@ -22,12 +23,15 @@ public class NotificationController {
     //  Call student notification data from https://dnunigo.herokuapp.com/dut/ Crawler server, then save data into DB
     @PostMapping("v1/notifications")
     public void saveNotification() {
+        log.info("User with requested to v1/notifications to saveNotification");
         notificationService.saveNotification();
     }
 
     //  Get notification data for client
     @GetMapping("v1/notifications")
     public List<NotificationsDTO> getNotification() {
+
+        log.info("User with requested to v1/notifications to getNotification");
         return notificationService.getNotification();
     }
 }

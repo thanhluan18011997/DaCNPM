@@ -7,7 +7,7 @@ import server.unigo.model.Schedules;
 import java.util.List;
 import java.util.Optional;
 
-@Service
+
 public interface ScheduleService {
     public void saveSchedule(String id);
     public List<SchedulesDTO> getSchedule(String id);

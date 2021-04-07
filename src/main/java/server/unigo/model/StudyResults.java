@@ -15,25 +15,25 @@ import javax.persistence.ManyToOne;
 @NoArgsConstructor
 @Entity
 public class StudyResults extends BaseEntity{
-    Long index_;
-    String semester;
-    String courseCode;
-    String courseName;
-    Double credit;
-    String pointFormula;
-    Double BT;
-    Double BV;
-    Double CC;
-    Double CK;
-    Double DA;
-    Double GK;
-    Double LT;
-    Double TH;
-    Double T10;
-    Double T4;
-    String asText;
+    private Long index_;
+    private String semester;
+    private String courseCode;
+    private String courseName;
+    private Double credit;
+    private String pointFormula;
+    private Double BT;
+    private Double BV;
+    private Double CC;
+    private Double CK;
+    private Double DA;
+    private Double GK;
+    private Double LT;
+    private Double TH;
+    private Double T10;
+    private Double T4;
+    private String asText;
     @ManyToOne()
-    PersonalInformations personalInformation;
+    private PersonalInformations personalInformation;
 
 
 }

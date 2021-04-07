@@ -15,7 +15,7 @@ import java.util.Set;
 @Entity
 
 public class StudyTimes extends BaseEntity {
-    Long time;
+    private Long time;
     @ManyToOne
-    DetailSchedules detailSchedule;
+    private DetailSchedules detailSchedule;
 }

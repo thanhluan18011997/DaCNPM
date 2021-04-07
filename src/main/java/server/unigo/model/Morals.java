@@ -13,18 +13,18 @@ import javax.persistence.OneToOne;
 @NoArgsConstructor
 @Entity
 public class Morals extends BaseEntity {
-    String semester;
-    Double registeredCredit;
-    Double relearnCredit;
-    Double avgB4;
-    Double avgScholar;
-    Double avgB10;
-    String studyClassify ;
-    Double moralPoints;
-    String warnings;
-    Double savedCredits;
-    Double avgSavedCreditB4;
-    Double avgMoral;
+    private String semester;
+    private Double registeredCredit;
+    private Double relearnCredit;
+    private Double avgB4;
+    private Double avgScholar;
+    private Double avgB10;
+    private String studyClassify ;
+    private Double moralPoints;
+    private String warnings;
+    private Double savedCredits;
+    private Double avgSavedCreditB4;
+    private Double avgMoral;
     @OneToOne(fetch = FetchType.LAZY)
-    PersonalInformations personalInformation;
+    private PersonalInformations personalInformation;
 }

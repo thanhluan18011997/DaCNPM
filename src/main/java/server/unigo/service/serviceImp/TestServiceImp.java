@@ -7,9 +7,11 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 import server.unigo.dto.TestsDTO;
 import server.unigo.map.TestMapper;
+import server.unigo.model.PersonalInformations;
 import server.unigo.model.Tests;
 import server.unigo.repository.PersonalInformationRepository;
 import server.unigo.repository.TestRepository;
@@ -65,6 +67,9 @@ public class TestServiceImp implements TestService {
 
     @Override
     public List<TestsDTO> getTest(String id) {
+        Optional<PersonalInformations> personalInformations = personalInformationRepository.findByStudentId(id);
+        if (!personalInformations.isPresent())
+            throw  new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found id");
         TestMapper testMapper = Mappers.getMapper(TestMapper.class);
         return testRepository.findByPersonalInformationID(id).get().stream().map(t ->
                 testMapper.mapEntityToDTo(t)
