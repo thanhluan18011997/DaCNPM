@@ -1,7 +1,6 @@
 package server.unigo.service.serviceImp;
 
 import org.mapstruct.factory.Mappers;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
@@ -12,8 +11,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 import server.unigo.dto.DetailSchedulesDTO;
 import server.unigo.dto.SchedulesDTO;
 import server.unigo.dto.StudyTimesDTO;
+import server.unigo.map.DetailScheduleMapper;
 import server.unigo.map.ScheduleMapper;
 import server.unigo.map.StudyTimeMapper;
+import server.unigo.map.WeeklyScheduleMapper;
 import server.unigo.model.*;
 import server.unigo.repository.*;
 import server.unigo.service.ScheduleService;
@@ -40,6 +41,7 @@ public class ScheduleServiceImp implements ScheduleService {
         this.studyTimeRepository = studyTimeRepository;
     }
 
+    //when using generic, appear cast error :" return hash map instead of json "
     @Override
     public void saveSchedule(String id) {
         HttpHeaders headers = new HttpHeaders();
@@ -55,7 +57,8 @@ public class ScheduleServiceImp implements ScheduleService {
                 new ParameterizedTypeReference<List<SchedulesDTO>>() {
                 });
         List<SchedulesDTO> schedulesDTOList = responseEntity.getBody();
-        ModelMapper modelMapper = new ModelMapper();
+        DetailScheduleMapper detailScheduleMapper = Mappers.getMapper(DetailScheduleMapper.class);
+        WeeklyScheduleMapper weeklyScheduleMapper = Mappers.getMapper(WeeklyScheduleMapper.class);
 
         for (SchedulesDTO schedulesDTO : schedulesDTOList) {
             Set<DetailSchedules> detailSchedulesSet = new HashSet<>();
@@ -66,11 +69,11 @@ public class ScheduleServiceImp implements ScheduleService {
                     StudyTimes studyTimes = studyTimeMapper.mapDTOtoEntity(studyTimesDTO);
                     studyTimesSet.add(studyTimes);
                 }
-                DetailSchedules detailSchedules = modelMapper.map(detailSchedulesDTO, DetailSchedules.class);
+                DetailSchedules detailSchedules = detailScheduleMapper.mapDTOtoEntity(detailSchedulesDTO);
                 detailSchedules.setStudyTime(studyTimesSet);
                 detailSchedulesSet.add(detailSchedules);
             }
-            WeeklySchedules weeklySchedules = modelMapper.map(schedulesDTO.getWeeklySchedule(), WeeklySchedules.class);
+            WeeklySchedules weeklySchedules = weeklyScheduleMapper.mapDTOtoEntity(schedulesDTO.getWeeklySchedule());
             weeklySchedules.setDetailSchedules(detailSchedulesSet);
             ScheduleMapper scheduleMapper = Mappers.getMapper(ScheduleMapper.class);
             server.unigo.model.Schedules schedules = scheduleMapper.mapDTOtoEntity(schedulesDTO);
@@ -113,7 +116,7 @@ public class ScheduleServiceImp implements ScheduleService {
     public List<SchedulesDTO> getSchedule(String id) {
         Optional<PersonalInformations> personalInformations = personalInformationRepository.findByStudentId(id);
         if (!personalInformations.isPresent())
-            throw  new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found id");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found id");
         ScheduleMapper scheduleMapper = Mappers.getMapper(ScheduleMapper.class);
         return scheduleRepository.findByPersonalInformationID(id).get().stream()
                 .map(t -> scheduleMapper.mapEntityToDTo(t)).collect(Collectors.toList());

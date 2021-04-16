@@ -1,7 +1,6 @@
 package server.unigo.service.serviceImp;
 
 import org.mapstruct.factory.Mappers;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
@@ -30,6 +29,7 @@ public class OverallNotificationServiceImp implements OverallNotificationService
         this.restTemplate = restTemplate;
     }
 
+    //when using generic, appear cast error :" return hash map instead of json "
     @Override
     public void saveOverallNotification() {
         HttpHeaders headers = new HttpHeaders();
@@ -45,9 +45,10 @@ public class OverallNotificationServiceImp implements OverallNotificationService
                 new ParameterizedTypeReference<List<OverallNotificationsDTO>>() {
                 });
         List<OverallNotificationsDTO> notificationsDTOList = responseEntity.getBody();
-        ModelMapper modelMapper = new ModelMapper();
+
+        OverallNotificationMapper overallNotificationMapper = Mappers.getMapper(OverallNotificationMapper.class);
         List<OverallNotifications> notificationsList = notificationsDTOList.stream().
-                map(t -> modelMapper.map(t, OverallNotifications.class)).collect(Collectors.toList());
+                map(t -> overallNotificationMapper.mapDTOtoEntity(t)).collect(Collectors.toList());
         notificationsList.forEach(t -> {
             Optional<OverallNotifications> overallNotificationsOptional = notificationRepository.findByTitle(t.getTitle());
             if (overallNotificationsOptional.isPresent())

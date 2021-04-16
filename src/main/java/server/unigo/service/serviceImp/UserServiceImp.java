@@ -1,0 +1,106 @@
+package server.unigo.service.serviceImp;
+
+import lombok.extern.log4j.Log4j2;
+import org.mapstruct.factory.Mappers;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.*;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.util.UriComponentsBuilder;
+import server.unigo.dto.RegisterResponseDTO;
+import server.unigo.dto.UsersDTO;
+import server.unigo.map.UserMapper;
+import server.unigo.model.Users;
+import server.unigo.repository.RoleRepository;
+import server.unigo.repository.UserRepository;
+import server.unigo.service.UserService;
+
+import java.util.Arrays;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@Service
+@Log4j2
+public class UserServiceImp implements UserService {
+
+    private final AuthenticationManager authenticationManager;
+    private final UserDetailsService userDetailsService;
+    private final RestTemplate restTemplate;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    @Autowired
+    public UserServiceImp(AuthenticationManager authenticationManager, UserDetailsService userDetailsService, RestTemplate restTemplate, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+        this.authenticationManager = authenticationManager;
+        this.userDetailsService = userDetailsService;
+        this.restTemplate = restTemplate;
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    @Override
+    public UsersDTO createUser(UsersDTO usersDTO) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        HttpEntity<RegisterResponseDTO> entity = new HttpEntity<>(headers);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("https://dnunigo.herokuapp.com/dut/")
+                .queryParam("command", "register")
+                .queryParam("username", usersDTO.getUsername())
+                .queryParam("password", usersDTO.getPassword());
+        ResponseEntity<RegisterResponseDTO> responseEntity = restTemplate.exchange(builder.toUriString(), HttpMethod.POST, entity, RegisterResponseDTO.class);
+        RegisterResponseDTO registerResponseDTO = responseEntity.getBody();
+        if (registerResponseDTO.isStatus()) {
+            UserMapper userMapper = Mappers.getMapper(UserMapper.class);
+            Users user = userMapper.mapDTOtoEntity(usersDTO);
+            user.setRoles(Arrays.asList(roleRepository.findByRole("ROLE_USER").get()).stream().collect(Collectors.toSet()));
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+            return userMapper.mapEntityToDTo(userRepository.save(user));
+        } else new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username or Password Invalid");
+        return null;
+    }
+
+    @Override
+    public UsersDTO getUser(String Username) {
+        Optional<Users> usersOptional = userRepository.findByUsername(Username);
+        if (usersOptional.isPresent()) {
+            UserMapper userMapper = Mappers.getMapper(UserMapper.class);
+            UsersDTO usersDTO = userMapper.mapEntityToDTo(usersOptional.get());
+            usersDTO.setPassword(null);
+        } else new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username or Password Invalid");
+        return null;
+    }
+
+    @Override
+    public Boolean updateUser(UsersDTO usersDTO) {
+        Optional<Users> usersOptional = userRepository.findByUsername(usersDTO.getUsername());
+        if (usersOptional.isPresent()) {
+            UserMapper userMapper = Mappers.getMapper(UserMapper.class);
+            Users users = userMapper.mapDTOtoEntity(usersDTO);
+            users.setId(usersOptional.get().getId());
+            userRepository.save(users);
+        } else new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username or Password Invalid");
+        return null;
+    }
+
+    @Override
+    public Authentication authentication(UsersDTO usersDTO) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                       usersDTO.getUsername(),
+                usersDTO.getPassword(), userDetailsService.loadUserByUsername(usersDTO.getUsername()).getAuthorities()
+                )
+        );
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return authentication;
+    }
+}

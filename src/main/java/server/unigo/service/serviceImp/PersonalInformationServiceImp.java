@@ -27,6 +27,7 @@ public class PersonalInformationServiceImp implements PersonalInformationService
         this.personalInformationRepository = personalInformationRepository;
     }
 
+    //when using generic, appear cast error :" return hash map instead of json "
     @Override
     public void savePersonalInformation(String id) {
         HttpHeaders headers = new HttpHeaders();
@@ -50,7 +51,7 @@ public class PersonalInformationServiceImp implements PersonalInformationService
         if (personalInformations.isPresent())
             return personalInformationMapper.mapEntityToDTo(personalInformations.get());
         else
-            throw  new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found id");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found id");
 
     }
 }

@@ -1,7 +1,6 @@
 package server.unigo.service.serviceImp;
 
 import org.mapstruct.factory.Mappers;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
@@ -35,6 +34,7 @@ public class TestServiceImp implements TestService {
         this.personalInformationRepository = personalInformationRepository;
     }
 
+    //when using generic, appear cast error :" return hash map instead of json "
     @Override
     public void saveTest(String id) {
         HttpHeaders headers = new HttpHeaders();
@@ -51,8 +51,9 @@ public class TestServiceImp implements TestService {
                 new ParameterizedTypeReference<List<TestsDTO>>() {
                 });
         List<TestsDTO> testsDTOList = responseEntity.getBody();
-        ModelMapper modelMapper = new ModelMapper();
-        List<Tests> testsList = testsDTOList.stream().map(t -> modelMapper.map(t, Tests.class)).collect(Collectors.toList());
+
+        TestMapper testMapper = Mappers.getMapper(TestMapper.class);
+        List<Tests> testsList = testsDTOList.stream().map(t -> testMapper.mapDTOtoEntity(t)).collect(Collectors.toList());
         testsList.forEach(
                 t -> {
                     Optional<Tests> testsOptional = testRepository.findByPersonalInformationIdAndCourseCode(id, t.getCourseCode());
@@ -69,7 +70,7 @@ public class TestServiceImp implements TestService {
     public List<TestsDTO> getTest(String id) {
         Optional<PersonalInformations> personalInformations = personalInformationRepository.findByStudentId(id);
         if (!personalInformations.isPresent())
-            throw  new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found id");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found id");
         TestMapper testMapper = Mappers.getMapper(TestMapper.class);
         return testRepository.findByPersonalInformationID(id).get().stream().map(t ->
                 testMapper.mapEntityToDTo(t)

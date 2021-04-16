@@ -1,7 +1,6 @@
 package server.unigo.service.serviceImp;
 
 import org.mapstruct.factory.Mappers;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
@@ -39,12 +38,13 @@ public class StudyResultServiceImp implements StudyResultService {
     public List<StudyResultsDTO> getStudyResult(String id) {
         Optional<PersonalInformations> personalInformations = personalInformationRepository.findByStudentId(id);
         if (!personalInformations.isPresent())
-            throw  new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found id");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found id");
         StudyResultMapper studyResultMapper = Mappers.getMapper(StudyResultMapper.class);
         return studyResultRepository.findByPersonalInformationID(id).get().stream().map(t -> studyResultMapper.mapEntityToDTo(t)).collect(Collectors.toList());
 
     }
 
+    //when using generic, appear cast error :" return hash map instead of json "
     @Override
     public List<StudyResults> saveStudentResult(String id) {
         HttpHeaders headers = new HttpHeaders();
@@ -61,9 +61,9 @@ public class StudyResultServiceImp implements StudyResultService {
                 new ParameterizedTypeReference<List<StudyResultsDTO>>() {
                 });
         List<StudyResultsDTO> studyResultsDTOList = responseEntity.getBody();
-        ModelMapper modelMapper = new ModelMapper();
+        StudyResultMapper studyResultMapper = Mappers.getMapper(StudyResultMapper.class);
         List<StudyResults> studyResultsList = studyResultsDTOList.stream()
-                .map(t -> modelMapper.map(t, StudyResults.class)).collect(Collectors.toList());
+                .map(t -> studyResultMapper.mapDTOtoEntity(t)).collect(Collectors.toList());
 
         studyResultsList.forEach(t -> {
             Optional<StudyResults> studyResultsOptional = studyResultRepository.findByPersonalInformationIdAndCourseCode(id, t.getCourseCode());

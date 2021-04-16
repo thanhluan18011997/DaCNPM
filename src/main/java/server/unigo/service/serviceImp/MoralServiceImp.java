@@ -34,6 +34,7 @@ public class MoralServiceImp implements MoralService {
         this.personalInformationRepository = personalInformationRepository;
     }
 
+    //when using generic, appear cast error :" return hash map instead of json "
     @Override
     public void saveMoral(String id) {
         HttpHeaders headers = new HttpHeaders();
@@ -66,7 +67,7 @@ public class MoralServiceImp implements MoralService {
     public List<MoralsDTO> getMoral(String id) {
         Optional<PersonalInformations> personalInformations = personalInformationRepository.findByStudentId(id);
         if (!personalInformations.isPresent())
-            throw  new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found id");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found id");
         MoralMapper moralMapper = Mappers.getMapper(MoralMapper.class);
         return moralRepository.findAll().stream().map(t -> moralMapper.mapEntityToDTo(t)).collect(Collectors.toList());
     }

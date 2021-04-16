@@ -1,7 +1,6 @@
 package server.unigo.service.serviceImp;
 
 import org.mapstruct.factory.Mappers;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
@@ -28,6 +27,7 @@ public class NotificationServiceImp implements NotificationService {
         this.notificationRepository = notificationRepository;
         this.restTemplate = restTemplate;
     }
+    //when using generic, appear cast error :" return hash map instead of json "
 
     @Override
     public void saveNotification() {
@@ -44,9 +44,10 @@ public class NotificationServiceImp implements NotificationService {
                 new ParameterizedTypeReference<List<NotificationsDTO>>() {
                 });
         List<NotificationsDTO> notificationsDTOList = responseEntity.getBody();
-        ModelMapper modelMapper = new ModelMapper();
+//        ModelMapper modelMapper = new ModelMapper();
+        NotificationMapper notificationMapper = Mappers.getMapper(NotificationMapper.class);
         List<Notifications> notificationsList = notificationsDTOList.stream()
-                .map(t -> modelMapper.map(t, Notifications.class)).collect(Collectors.toList());
+                .map(t -> notificationMapper.mapDTOtoEntity(t)).collect(Collectors.toList());
         notificationsList.forEach(t -> notificationRepository.save(t));
     }
 

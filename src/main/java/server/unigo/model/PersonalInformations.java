@@ -32,5 +32,7 @@ public class PersonalInformations  {
     @OneToOne(mappedBy = "personalInformation",fetch = FetchType.LAZY )
     @Transient
     private Morals moral;
+    @OneToOne(fetch = FetchType.LAZY)
+    private Users user;
 
 }
