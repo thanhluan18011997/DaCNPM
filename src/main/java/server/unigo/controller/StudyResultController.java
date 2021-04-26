@@ -20,20 +20,14 @@ public class StudyResultController {
     public StudyResultController(StudyResultService studyResultService) {
         this.studyResultService = studyResultService;
     }
-    //  Call student StudyResult data from https://dnunigo.herokuapp.com/dut/ Crawler server, then save data into DB
-    @PostMapping("v1/study_result/{id}")
-    public void saveStudentResult(@PathVariable String id){
 
-        log.info("User with ID="+id+" requested to v1/study_result/ to saveStudentResult");
-        studyResultService.saveStudentResult(id);
-    }
 
     //  Get StudyResults data for client
     @GetMapping("v1/study_result/{id}")
     @PreAuthorize("hasAnyAuthority('READ_StudyResult')")
     public List<StudyResultsDTO> getStudyResults(@PathVariable String id){
-    log.info("User with ID="+id+" requested to v1/study_result/ to getStudyResults");
-
+        studyResultService.saveStudentResult(id);
+        log.info("User with ID="+id+" requested to v1/study_result/ to getStudyResults");
         return studyResultService.getStudyResult(id);
     }
 }

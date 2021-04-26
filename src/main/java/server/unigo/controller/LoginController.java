@@ -23,15 +23,17 @@ public class LoginController {
     public LoginOutput authenticateUser( @RequestBody UsersDTO usersDTO) {
 
        try {
-           Authentication authentication=userService.authentication(usersDTO);
-           String jwt = tokenProvider.generateJwt((CustomUserDetail) authentication.getPrincipal());
-           return new LoginOutput(jwt);
+           if (userService.verifyUser(usersDTO).isStatus()){
+               Authentication authentication=userService.authentication(usersDTO);
+               String jwt = tokenProvider.generateJwt((CustomUserDetail) authentication.getPrincipal());
+               return new LoginOutput(jwt);
+           }
+
        }
        catch(Exception e){
-           UsersDTO user = userService.createUser(usersDTO);
+           Users user = userService.createUser(usersDTO);
            if (user!=null){
-               Authentication authentication=userService.authentication(user);
-               String jwt = tokenProvider.generateJwt((CustomUserDetail) authentication.getPrincipal());
+               String jwt = tokenProvider.generateJwt(new CustomUserDetail(user));
                return new LoginOutput(jwt);
            }
        }

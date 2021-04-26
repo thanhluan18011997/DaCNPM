@@ -10,7 +10,9 @@ import org.springframework.web.util.UriComponentsBuilder;
 import server.unigo.dto.PersonalInformationsDTO;
 import server.unigo.map.PersonalInformationMapper;
 import server.unigo.model.PersonalInformations;
+import server.unigo.model.Users;
 import server.unigo.repository.PersonalInformationRepository;
+import server.unigo.repository.UserRepository;
 import server.unigo.service.PersonalInformationService;
 
 import java.util.Arrays;
@@ -20,11 +22,13 @@ import java.util.Optional;
 public class PersonalInformationServiceImp implements PersonalInformationService {
     private final RestTemplate restTemplate;
     private final PersonalInformationRepository personalInformationRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public PersonalInformationServiceImp(RestTemplate restTemplate, PersonalInformationRepository personalInformationRepository) {
+    public PersonalInformationServiceImp(RestTemplate restTemplate, PersonalInformationRepository personalInformationRepository, UserRepository userRepository) {
         this.restTemplate = restTemplate;
         this.personalInformationRepository = personalInformationRepository;
+        this.userRepository = userRepository;
     }
 
     //when using generic, appear cast error :" return hash map instead of json "
@@ -41,7 +45,10 @@ public class PersonalInformationServiceImp implements PersonalInformationService
         PersonalInformationsDTO personalInformationsDTO = responseEntity.getBody();
         PersonalInformationMapper personalInformationMapper = Mappers.getMapper(PersonalInformationMapper.class);
         PersonalInformations personalInformations = personalInformationMapper.mapDTOtoEntity(personalInformationsDTO);
+        Users user = userRepository.findByUsername(id).get();
+        personalInformations.setUser(user);
         personalInformationRepository.save(personalInformations);
+
     }
 
     @Override

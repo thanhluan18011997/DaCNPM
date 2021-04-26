@@ -23,16 +23,12 @@ public class MoralController {
     }
 
     //  Call student moral data from https://dnunigo.herokuapp.com/dut/ Crawler server, then save data into DB
-    @PreAuthorize("hasAnyAuthority('READ_Moral')")
-    @PostMapping("v1/morals/{id}")
-    public void saveMoral(@PathVariable String id) {
-        log.info("User with ID="+id+" requested to v1/morals/ to saveMoral");
-        moralService.saveMoral(id);
-    }
 
     //  Get student moral data for client
     @GetMapping("v1/morals/{id}")
+    @PreAuthorize("hasAnyAuthority('READ_Moral')")
     public List<MoralsDTO> getMoral(@PathVariable String id) {
+        moralService.saveMoral(id);
         log.info("User with ID="+id+" requested to v1/morals/ to getMoral");
         return moralService.getMoral(id);
     }

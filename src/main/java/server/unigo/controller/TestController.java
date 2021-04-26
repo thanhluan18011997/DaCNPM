@@ -21,16 +21,12 @@ public class TestController {
     public TestController(TestService testService) {
         this.testService = testService;
     }
-    //  Call student test data from https://dnunigo.herokuapp.com/dut/ Crawler server, then save data into DB
-    @PostMapping("v1/tests/{id}")
-    public void saveTest(@PathVariable String id) {
-        log.info("User with ID="+id+" requested to v1/tests to saveTest");
-        testService.saveTest(id);
-    }
+
     //  Get Test data for client
     @GetMapping("v1/tests/{id}")
     @PreAuthorize("hasAnyAuthority('READ_Test')")
     public List<TestsDTO> getTest(@PathVariable String id) {
+        testService.saveTest(id);
         log.info("User with ID="+id+" requested to v1/tests to getTest");
         return testService.getTest(id);
     }

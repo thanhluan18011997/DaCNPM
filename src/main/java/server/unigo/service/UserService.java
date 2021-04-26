@@ -1,11 +1,12 @@
 package server.unigo.service;
 
 import org.springframework.security.core.Authentication;
+import server.unigo.dto.RegisterResponseDTO;
 import server.unigo.dto.UsersDTO;
+import server.unigo.model.Users;
 
 public interface UserService {
-    public UsersDTO createUser(UsersDTO usersDTO);
-    public UsersDTO getUser(String Username);
-    public Boolean updateUser(UsersDTO usersDTO);
+    public Users createUser(UsersDTO usersDTO);
+   public RegisterResponseDTO verifyUser(UsersDTO usersDTO);
     public Authentication authentication(UsersDTO usersDTO);
 }

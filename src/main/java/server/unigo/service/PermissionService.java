@@ -2,8 +2,10 @@ package server.unigo.service;
 
 import server.unigo.dto.PermissionsDTO;
 
+import java.util.Set;
+
 public interface PermissionService {
-    public PermissionsDTO createPermission(PermissionsDTO permissionsDTO);
+    public void modifyPermission(Set<String > permissionsDTONameSet, String id);
     public void deletePermission(String permissionName);
-    public PermissionsDTO getPermission(String permissionName);
+    public Set<PermissionsDTO> getPermissionByID(String id);
     }

@@ -8,11 +8,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import server.unigo.dto.OverallNotificationsDTO;
+import server.unigo.dto.UsersDTO;
 import server.unigo.map.OverallNotificationMapper;
 import server.unigo.model.OverallNotifications;
 import server.unigo.repository.OverallNotificationRepository;
 import server.unigo.service.OverallNotificationService;
-
+import server.unigo.service.UserService;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -22,16 +23,23 @@ import java.util.stream.Collectors;
 public class OverallNotificationServiceImp implements OverallNotificationService {
     private final OverallNotificationRepository notificationRepository;
     private final RestTemplate restTemplate;
+    private final UserService userService;
 
     @Autowired
-    public OverallNotificationServiceImp(OverallNotificationRepository notificationRepository, RestTemplate restTemplate) {
+    public OverallNotificationServiceImp(OverallNotificationRepository notificationRepository, RestTemplate restTemplate, UserService userService) {
         this.notificationRepository = notificationRepository;
         this.restTemplate = restTemplate;
+        this.userService = userService;
     }
 
     //when using generic, appear cast error :" return hash map instead of json "
     @Override
     public void saveOverallNotification() {
+        UsersDTO usersDTO=new UsersDTO();
+        usersDTO.setUsername("102170100");
+        usersDTO.setPassword("luan102170100");
+        userService.verifyUser(usersDTO);
+        notificationRepository.deleteAll();
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
         HttpEntity<List<OverallNotificationsDTO>> entity = new HttpEntity<List<OverallNotificationsDTO>>(headers);
