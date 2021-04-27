@@ -10,4 +10,5 @@ public class UnigoConfiguration{
     public RestTemplate restTemplate(){
         return new RestTemplate();
     }
+
 }

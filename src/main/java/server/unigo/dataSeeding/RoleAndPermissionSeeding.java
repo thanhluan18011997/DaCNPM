@@ -3,7 +3,6 @@ package server.unigo.dataSeeding;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import server.unigo.model.Permissions;
 import server.unigo.model.Roles;
@@ -11,10 +10,8 @@ import server.unigo.model.Users;
 import server.unigo.repository.PermissionRepository;
 import server.unigo.repository.RoleRepository;
 import server.unigo.repository.UserRepository;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -25,8 +22,6 @@ public class RoleAndPermissionSeeding implements ApplicationListener {
     private RoleRepository roleRepository;
     @Autowired
     private PermissionRepository permissionRepository;
-    @Autowired
-    private  PasswordEncoder passwordEncoder;
 
 
     public void createRolesAndPermission(List<String> roles, List<String> permissions) {
@@ -57,7 +52,7 @@ public class RoleAndPermissionSeeding implements ApplicationListener {
         if (!admin.isPresent()) {
             Users ad = new Users();
             ad.setUsername("admin");
-            ad.setPassword(passwordEncoder.encode("123456"));
+            ad.setPassword(Base64.getEncoder().encodeToString("123456".getBytes()));
             Roles adminRole = roleRepository.findByRole("ROLE_ADMIN").get();
             Set<Permissions> permissionsSet = permissionRepository.findAll().stream().collect(Collectors.toSet());
             Permissions permissions = new Permissions("ADMIN_Authority", "ADMIN");

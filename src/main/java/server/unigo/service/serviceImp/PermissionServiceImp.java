@@ -34,7 +34,7 @@ public class PermissionServiceImp implements PermissionService {
     }
 
     @Override
-    public void modifyPermission(Set<String > permissionsDTONameSet, String id) {
+    public Boolean modifyPermission(Set<String > permissionsDTONameSet, String id) {
         PermissionMapper permissionMapper = Mappers.getMapper(PermissionMapper.class);
         Optional<Users> usersOptional = userRepository.findByUsername(id);
         if (usersOptional.isPresent()){
@@ -46,10 +46,11 @@ public class PermissionServiceImp implements PermissionService {
             roleRepository.save(roles);
             user.setRoles(Arrays.asList(roles).stream().collect(Collectors.toSet()));
             userRepository.save(user);
+            return true;
 
         }
         else new ResponseStatusException(HttpStatus.NOT_FOUND, "Nott found " + id);
-
+        return false;
     }
 
     @Override

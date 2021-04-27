@@ -20,11 +20,11 @@ public class PersonalInformationController {
         this.personalInformationService = personalInformationService;
     }
 
+
     //  Get PersonalInformation data for client
     @GetMapping("/v1/personal_informations/{id}")
     @PreAuthorize("hasAnyAuthority('READ_PersonalInformation')")
     public PersonalInformationsDTO getPersonalInformation(@PathVariable String id) {
-        personalInformationService.savePersonalInformation(id);
         log.info("User with ID=" + id + " requested to v1/personal_informations/ to getPersonalInformation");
         PersonalInformationsDTO personalInformationsDTO = personalInformationService.getPersonalInformations(id);
         return personalInformationsDTO;

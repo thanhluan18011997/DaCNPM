@@ -26,7 +26,6 @@ public class TestController {
     @GetMapping("v1/tests/{id}")
     @PreAuthorize("hasAnyAuthority('READ_Test')")
     public List<TestsDTO> getTest(@PathVariable String id) {
-        testService.saveTest(id);
         log.info("User with ID="+id+" requested to v1/tests to getTest");
         return testService.getTest(id);
     }

@@ -24,6 +24,7 @@ import server.unigo.service.PersonalInformationService;
 import server.unigo.service.UserService;
 
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -59,7 +60,7 @@ public class UserServiceImp implements UserService {
         if (registerResponseDTO.isStatus()) {
             Users user = userMapper.mapDTOtoEntity(usersDTO);
             user.setRoles(Arrays.asList(roleRepository.findByRole("ROLE_USER").get()).stream().collect(Collectors.toSet()));
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.setPassword( Base64.getEncoder().encodeToString(user.getPassword().getBytes()));
             if (usersOptional.isPresent()) {
                 user.setId(usersOptional.get().getId());
             }
@@ -91,8 +92,8 @@ public class UserServiceImp implements UserService {
     public Authentication authentication(UsersDTO usersDTO) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                       usersDTO.getUsername(),
-                usersDTO.getPassword(), userDetailsService.loadUserByUsername(usersDTO.getUsername()).getAuthorities()
+                        usersDTO.getUsername()    ,
+                        Base64.getEncoder().encodeToString(usersDTO.getPassword().getBytes()), userDetailsService.loadUserByUsername(usersDTO.getUsername()).getAuthorities()
                 )
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);

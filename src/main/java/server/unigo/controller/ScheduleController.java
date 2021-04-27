@@ -22,12 +22,10 @@ public class ScheduleController {
         this.scheduleService = scheduleService;
     }
 
-
     //  Get Schedule data for client
     @GetMapping("v1/schedules/{id}")
     @PreAuthorize("hasAnyAuthority('READ_Schedule')")
     public List<SchedulesDTO> getSchedule(@PathVariable String id) {
-        scheduleService.saveSchedule(id);
         log.info("User with ID="+id+" requested to v1/schedules/ to getSchedule");
         return scheduleService.getSchedule(id);
     }

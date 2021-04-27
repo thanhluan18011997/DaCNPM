@@ -16,14 +16,14 @@ public class PermissionController {
         this.permissionService = permissionService;
     }
 
-    @GetMapping("v1/permissions/{id}")
+    @GetMapping("/v1/permissions/{id}")
     public Set<PermissionsDTO> getAllPermission(@PathVariable("id") String id) {
         return permissionService.getPermissionByID(id);
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN_Authority')")
-    @PutMapping("v1/permissions/{id}")
-    public void modifiPermission(@RequestBody Set<String> PermissionNames, @PathVariable("id") String id) {
-        permissionService.modifyPermission(PermissionNames, id);
+    @PutMapping("/v1/permissions/{id}")
+    public Boolean modifiPermission(@RequestBody Set<String> PermissionNameList, @PathVariable("id") String id) {
+        return permissionService.modifyPermission(PermissionNameList, id);
     }
 }

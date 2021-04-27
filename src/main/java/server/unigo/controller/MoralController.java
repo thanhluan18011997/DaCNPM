@@ -22,13 +22,10 @@ public class MoralController {
         this.moralService = moralService;
     }
 
-    //  Call student moral data from https://dnunigo.herokuapp.com/dut/ Crawler server, then save data into DB
-
     //  Get student moral data for client
     @GetMapping("v1/morals/{id}")
     @PreAuthorize("hasAnyAuthority('READ_Moral')")
     public List<MoralsDTO> getMoral(@PathVariable String id) {
-        moralService.saveMoral(id);
         log.info("User with ID="+id+" requested to v1/morals/ to getMoral");
         return moralService.getMoral(id);
     }

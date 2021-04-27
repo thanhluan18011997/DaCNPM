@@ -26,8 +26,8 @@ public class StudyResultController {
     @GetMapping("v1/study_result/{id}")
     @PreAuthorize("hasAnyAuthority('READ_StudyResult')")
     public List<StudyResultsDTO> getStudyResults(@PathVariable String id){
-        studyResultService.saveStudentResult(id);
-        log.info("User with ID="+id+" requested to v1/study_result/ to getStudyResults");
+    log.info("User with ID="+id+" requested to v1/study_result/ to getStudyResults");
+
         return studyResultService.getStudyResult(id);
     }
 }
