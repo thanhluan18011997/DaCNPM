@@ -1,5 +1,6 @@
 package server.unigo.dataSeeding;
 
+import lombok.extern.log4j.Log4j2;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -12,7 +13,7 @@ import server.unigo.repository.UserRepository;
 import server.unigo.service.*;
 
 import java.util.Base64;
-
+@Log4j2
 @Component
 public class UpdateData {
     private final UserRepository userRepository;
@@ -35,8 +36,11 @@ public class UpdateData {
     }
 
     @Async
-    @Scheduled(fixedRate = 1800000, initialDelay = 10000)
+//    @Scheduled(fixedRate = 1800000, initialDelay = 10000)
+    @Scheduled(fixedRate = 600000, initialDelay = 10000)
     public void update() {
+        System.out.println("update--------------------");
+        log.info("update--------------------");
         userRepository.findAll().forEach(t ->
         {
                 UsersDTO usersDTO = new UsersDTO();

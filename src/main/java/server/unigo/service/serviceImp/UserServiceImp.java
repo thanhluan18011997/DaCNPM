@@ -20,8 +20,7 @@ import server.unigo.map.UserMapper;
 import server.unigo.model.Users;
 import server.unigo.repository.RoleRepository;
 import server.unigo.repository.UserRepository;
-import server.unigo.service.PersonalInformationService;
-import server.unigo.service.UserService;
+import server.unigo.service.*;
 
 import java.util.Arrays;
 import java.util.Base64;
@@ -39,10 +38,14 @@ public class UserServiceImp implements UserService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final PersonalInformationService personalInformationService;
+    private final MoralService moralService;
+    private final ScheduleService scheduleService;
+    private final StudyResultService studyResultService;
+    private final TestService testService;
 
 
     @Autowired
-    public UserServiceImp(AuthenticationManager authenticationManager, UserDetailsService userDetailsService, RestTemplate restTemplate, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, PersonalInformationService personalInformationService) {
+    public UserServiceImp(AuthenticationManager authenticationManager, UserDetailsService userDetailsService, RestTemplate restTemplate, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, PersonalInformationService personalInformationService, MoralService moralService, ScheduleService scheduleService, StudyResultService studyResultService, TestService testService) {
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
         this.restTemplate = restTemplate;
@@ -50,23 +53,31 @@ public class UserServiceImp implements UserService {
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.personalInformationService = personalInformationService;
+        this.moralService = moralService;
+        this.scheduleService = scheduleService;
+        this.studyResultService = studyResultService;
+        this.testService = testService;
     }
 
     @Override
     public Users createUser(UsersDTO usersDTO) {
-        RegisterResponseDTO registerResponseDTO=verifyUser(usersDTO);
+        RegisterResponseDTO registerResponseDTO = verifyUser(usersDTO);
         UserMapper userMapper = Mappers.getMapper(UserMapper.class);
         Optional<Users> usersOptional = userRepository.findByUsername(usersDTO.getUsername());
         if (registerResponseDTO.isStatus()) {
             Users user = userMapper.mapDTOtoEntity(usersDTO);
             user.setRoles(Arrays.asList(roleRepository.findByRole("ROLE_USER").get()).stream().collect(Collectors.toSet()));
-            user.setPassword( Base64.getEncoder().encodeToString(user.getPassword().getBytes()));
+            user.setPassword(Base64.getEncoder().encodeToString(user.getPassword().getBytes()));
             if (usersOptional.isPresent()) {
                 user.setId(usersOptional.get().getId());
-            }
-            else{
+            } else {
                 Users saveUsers = userRepository.save(user);
                 personalInformationService.savePersonalInformation(user.getUsername());
+                moralService.saveMoral(user.getUsername());
+                scheduleService.saveSchedule(user.getUsername());
+                studyResultService.saveStudentResult(user.getUsername());
+                testService.saveTest(user.getUsername());
+
 
             }
             return userRepository.save(user);
@@ -84,7 +95,7 @@ public class UserServiceImp implements UserService {
                 .queryParam("username", usersDTO.getUsername())
                 .queryParam("password", usersDTO.getPassword());
         ResponseEntity<RegisterResponseDTO> responseEntity = restTemplate.exchange(builder.toUriString(), HttpMethod.POST, entity, RegisterResponseDTO.class);
-         return responseEntity.getBody();
+        return responseEntity.getBody();
     }
 
 
@@ -92,7 +103,7 @@ public class UserServiceImp implements UserService {
     public Authentication authentication(UsersDTO usersDTO) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        usersDTO.getUsername()    ,
+                        usersDTO.getUsername(),
                         Base64.getEncoder().encodeToString(usersDTO.getPassword().getBytes()), userDetailsService.loadUserByUsername(usersDTO.getUsername()).getAuthorities()
                 )
         );

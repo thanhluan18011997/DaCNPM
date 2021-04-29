@@ -1,5 +1,6 @@
 package server.unigo.controller;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -17,7 +18,7 @@ import server.unigo.security.LoginOutput;
 import server.unigo.service.UserService;
 
 import java.util.Base64;
-
+@Log4j2
 @RestController
 public class LoginController {
     @Autowired
@@ -27,6 +28,7 @@ public class LoginController {
 
     @PostMapping("/v1/login")
     public LoginOutput authenticateUser( @RequestBody UsersDTO usersDTO) {
+        log.info("User with ID="+usersDTO.getUsername()+" logining");
        try {
 
                Authentication authentication=userService.authentication(usersDTO);
@@ -41,8 +43,12 @@ public class LoginController {
                String jwt = tokenProvider.generateJwt(new CustomUserDetail(user));
                return new LoginOutput(jwt);
            }
-           else
-               return new LoginOutput("Username or Password Invalid");
+           else{
+               LoginOutput loginOutput = new LoginOutput("");
+               loginOutput.setStatus("Invalid");
+               return loginOutput;
+           }
+
        }
 
     }

@@ -26,7 +26,6 @@ public class NotificationController {
     //  Call student notification data from https://dnunigo.herokuapp.com/dut/ Crawler server, then save data into DB
     @Async
     @Scheduled(fixedRate = 300000, initialDelay = 10000)
-    @PostMapping("/v1/notifications")
     public void saveNotification() {
         log.info("User with requested to v1/notifications to saveNotification");
         notificationService.saveNotification();
