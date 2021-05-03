@@ -18,16 +18,26 @@ public class StudyResultsDTO {
     Double credit;
     @JsonProperty("point_formular")
     String pointFormula;
-    Double BT;
-    Double BV;
-    Double CC;
-    Double CK;
-    Double DA;
-    Double GK;
-    Double LT;
-    Double TH;
-    Double T10;
-    Double T4;
+    @JsonProperty("BT")
+    String BT;
+    @JsonProperty("BV")
+    String BV;
+    @JsonProperty("CC")
+    String CC;
+    @JsonProperty("CK")
+    String CK;
+    @JsonProperty("DA")
+    String DA;
+    @JsonProperty("GK")
+    String GK;
+    @JsonProperty("LT")
+    String LT;
+    @JsonProperty("TH")
+    String TH;
+    @JsonProperty("T10")
+    String T10;
+    @JsonProperty("T4")
+    String T4;
     @JsonProperty("as_text")
     String asText;
 

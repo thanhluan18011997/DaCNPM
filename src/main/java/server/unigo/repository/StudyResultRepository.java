@@ -20,4 +20,6 @@ public interface StudyResultRepository extends JpaRepository<StudyResults,Long> 
     Optional<List<StudyResults>> findByPersonalInformationID(@Param("studentId") String studentId);
     @Query(value = "SELECT s FROM StudyResults s where s.personalInformation.studentId=:studentId and s.courseCode=:courseCode")
     Optional<StudyResults> findByPersonalInformationIdAndCourseCode(@Param("studentId")String id,@Param("courseCode") String courseCode);
+    @Query(value = "SELECT s FROM StudyResults s where s.personalInformation.studentId=:studentId and s.courseName LIKE CONCAT('%',:courseName,'%')")
+    Optional<List<StudyResults>> findByIdAndCourseNameContaining(@Param("studentId")String id,@Param("courseName") String courseName);
 }

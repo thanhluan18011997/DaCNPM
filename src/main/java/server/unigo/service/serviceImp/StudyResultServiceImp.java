@@ -35,7 +35,7 @@ public class StudyResultServiceImp implements StudyResultService {
     }
 
     @Override
-    public List<StudyResultsDTO> getStudyResult(String id) {
+    public List<StudyResultsDTO> getAllStudyResult(String id) {
         Optional<PersonalInformations> personalInformations = personalInformationRepository.findByStudentId(id);
         if (!personalInformations.isPresent())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found id");
@@ -73,5 +73,14 @@ public class StudyResultServiceImp implements StudyResultService {
             studyResultRepository.save(t);
         });
         return studyResultsList;
+    }
+
+    @Override
+    public List<StudyResultsDTO> getStudyResult(String id, String name) {
+        Optional<List<StudyResults>> studyResultsOptional = studyResultRepository.findByIdAndCourseNameContaining(id,name);
+        StudyResultMapper studyResultMapper=Mappers.getMapper(StudyResultMapper.class);
+        if (studyResultsOptional.isPresent())
+            return studyResultsOptional.get().stream().map(t->studyResultMapper.mapEntityToDTo(t)).collect(Collectors.toList());
+        return null;
     }
 }

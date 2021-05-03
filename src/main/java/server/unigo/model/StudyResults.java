@@ -21,16 +21,16 @@ public class StudyResults extends BaseEntity{
     private String courseName;
     private Double credit;
     private String pointFormula;
-    private Double BT;
-    private Double BV;
-    private Double CC;
-    private Double CK;
-    private Double DA;
-    private Double GK;
-    private Double LT;
-    private Double TH;
-    private Double T10;
-    private Double T4;
+    private String BT;
+    private String BV;
+    private String CC;
+    private String CK;
+    private String DA;
+    private String GK;
+    private String LT;
+    private String TH;
+    private String T10;
+    private String T4;
     private String asText;
     @ManyToOne()
     private PersonalInformations personalInformation;

@@ -25,9 +25,16 @@ public class StudyResultController {
     //  Get StudyResults data for client
     @GetMapping("v1/study_result/{id}")
     @PreAuthorize("hasAnyAuthority('READ_StudyResult')")
-    public List<StudyResultsDTO> getStudyResults(@PathVariable String id){
+    public List<StudyResultsDTO> getStudyResults(@PathVariable("id") String id){
     log.info("User with ID="+id+" requested to v1/study_result/ to getStudyResults");
+        return studyResultService.getAllStudyResult(id);
+    }
 
-        return studyResultService.getStudyResult(id);
+    //  Get StudyResults data for client
+    @GetMapping("v1/study_result/{id}/{courseName}")
+    @PreAuthorize("hasAnyAuthority('READ_StudyResult')")
+    public List<StudyResultsDTO> getStudyResultsByName(@PathVariable("id") String id,@PathVariable("courseName") String courseName){
+        log.info("User with ID="+id+" requested to v1/study_result/ to getStudyResultsByName");
+        return studyResultService.getStudyResult(id, courseName);
     }
 }
