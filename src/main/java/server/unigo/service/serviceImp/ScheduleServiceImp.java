@@ -49,7 +49,8 @@ public class ScheduleServiceImp implements ScheduleService {
         HttpEntity<List<SchedulesDTO>> entity = new HttpEntity<List<SchedulesDTO>>(headers);
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("https://dnunigo.herokuapp.com/dut/")
                 .queryParam("command", "get_schedule")
-                .queryParam("session_id", id);
+                .queryParam("session_id", id)
+                .queryParam("semester_id", "2020");
         ResponseEntity<List<SchedulesDTO>> responseEntity = restTemplate.exchange(
                 builder.toUriString(),
                 HttpMethod.POST,
