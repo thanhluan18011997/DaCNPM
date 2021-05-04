@@ -11,10 +11,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import server.unigo.dto.DetailSchedulesDTO;
 import server.unigo.dto.SchedulesDTO;
 import server.unigo.dto.StudyTimesDTO;
-import server.unigo.map.DetailScheduleMapper;
-import server.unigo.map.ScheduleMapper;
-import server.unigo.map.StudyTimeMapper;
-import server.unigo.map.WeeklyScheduleMapper;
+import server.unigo.map.*;
 import server.unigo.model.*;
 import server.unigo.repository.*;
 import server.unigo.service.ScheduleService;
@@ -116,9 +113,14 @@ public class ScheduleServiceImp implements ScheduleService {
     @Override
     public List<SchedulesDTO> getSchedule(String id) {
         Optional<PersonalInformations> personalInformations = personalInformationRepository.findByStudentId(id);
+        DetailScheduleMapper detailScheduleMapper = Mappers.getMapper(DetailScheduleMapper.class);
+        StudyTimeMapper studyTimeMapper = Mappers.getMapper(StudyTimeMapper.class);
         if (!personalInformations.isPresent())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found id");
         ScheduleMapper scheduleMapper = Mappers.getMapper(ScheduleMapper.class);
+        List<Schedules> schedulesList =scheduleRepository.findByPersonalInformationID(id).get();
+        List<SchedulesDTO> schedulesDTOList = schedulesList.stream()
+                .map(t -> scheduleMapper.mapEntityToDTo(t)).collect(Collectors.toList());
         return scheduleRepository.findByPersonalInformationID(id).get().stream()
                 .map(t -> scheduleMapper.mapEntityToDTo(t)).collect(Collectors.toList());
     }

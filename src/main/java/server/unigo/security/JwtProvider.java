@@ -8,7 +8,7 @@ import java.util.Date;
 @Component
 @Log4j2
 public class JwtProvider {
-    private final Long JWT_EXPIRATION =604800000L;
+    private final Long JWT_EXPIRATION =3600000L;
     public String  generateJwt(CustomUserDetail userDetails){
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + JWT_EXPIRATION);

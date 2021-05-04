@@ -15,7 +15,7 @@ public class PermissionController {
     public PermissionController(PermissionService permissionService) {
         this.permissionService = permissionService;
     }
-
+    @PreAuthorize("hasAnyAuthority('ADMIN_Authority')")
     @GetMapping("/v1/permissions/{id}")
     public Set<PermissionsDTO> getAllPermission(@PathVariable("id") String id) {
         return permissionService.getPermissionByID(id);
