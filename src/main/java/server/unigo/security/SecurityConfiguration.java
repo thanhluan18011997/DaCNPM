@@ -15,10 +15,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import server.unigo.service.serviceImp.UserDetailService;
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableWebMvc
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Bean
@@ -27,6 +32,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return super.authenticationManager();
     }
 
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurerAdapter() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**");
+            }
+        };
+    }
     @Bean
     public JwtAuthFilter jwtAuthFilter() {
         return new JwtAuthFilter();
