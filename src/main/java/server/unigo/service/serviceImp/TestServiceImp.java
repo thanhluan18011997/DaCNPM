@@ -43,7 +43,7 @@ public class TestServiceImp implements TestService {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("https://dnunigo.herokuapp.com/dut/")
                 .queryParam("command", "get_tests")
                 .queryParam("session_id", id)
-                .queryParam("semester_id", "2010");
+                .queryParam("semester_id", "2020");
         ResponseEntity<List<TestsDTO>> responseEntity = restTemplate.exchange(
                 builder.toUriString(),
                 HttpMethod.POST,

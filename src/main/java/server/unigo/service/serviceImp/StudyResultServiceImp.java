@@ -53,7 +53,7 @@ public class StudyResultServiceImp implements StudyResultService {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("https://dnunigo.herokuapp.com/dut/")
                 .queryParam("command", "get_study_result")
                 .queryParam("session_id", id)
-                .queryParam("semester_id", "2010");
+                .queryParam("semester_id", "2020");
         ResponseEntity<List<StudyResultsDTO>> responseEntity = restTemplate.exchange(
                 builder.toUriString(),
                 HttpMethod.POST,
