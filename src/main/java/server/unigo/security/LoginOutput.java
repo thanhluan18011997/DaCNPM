@@ -7,8 +7,10 @@ public class LoginOutput {
     private String accessToken;
     private String tokenType = "Bearer";
     private String status = "Ok";
+    private String role;
 
-    public LoginOutput(String accessToken) {
+    public LoginOutput(String accessToken,String role) {
         this.accessToken = accessToken;
+        this.role=role;
     }
 }

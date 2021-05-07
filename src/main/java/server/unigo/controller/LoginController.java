@@ -33,7 +33,10 @@ public class LoginController {
 
                Authentication authentication=userService.authentication(usersDTO);
                String jwt = tokenProvider.generateJwt((CustomUserDetail) authentication.getPrincipal());
-               return new LoginOutput(jwt);
+               if (usersDTO.getUsername().equals("admin"))
+                   return new LoginOutput(jwt,"admin");
+               else
+                   return new LoginOutput(jwt,"user");
 
 
        }
@@ -41,10 +44,13 @@ public class LoginController {
            Users user = userService.createUser(usersDTO);
            if (user!=null){
                String jwt = tokenProvider.generateJwt(new CustomUserDetail(user));
-               return new LoginOutput(jwt);
+               if (usersDTO.getUsername().equals("admin"))
+                   return new LoginOutput(jwt,"admin");
+               else
+                   return new LoginOutput(jwt,"user");
            }
            else{
-               LoginOutput loginOutput = new LoginOutput("");
+               LoginOutput loginOutput = new LoginOutput("","");
                loginOutput.setStatus("Invalid");
                return loginOutput;
            }
