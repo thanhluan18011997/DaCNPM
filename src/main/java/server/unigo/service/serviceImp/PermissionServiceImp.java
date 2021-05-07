@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import server.unigo.dto.IdAndPermissionDTO;
 import server.unigo.dto.PermissionsDTO;
 import server.unigo.map.PermissionMapper;
 import server.unigo.model.Permissions;
@@ -16,6 +17,7 @@ import server.unigo.repository.UserRepository;
 import server.unigo.service.PermissionService;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -37,9 +39,9 @@ public class PermissionServiceImp implements PermissionService {
     public Boolean modifyPermission(Set<String > permissionsDTONameSet, String id) {
         PermissionMapper permissionMapper = Mappers.getMapper(PermissionMapper.class);
         Optional<Users> usersOptional = userRepository.findByUsername(id);
-        if (usersOptional.isPresent()){
+        if (usersOptional.isPresent() ){
             Users user=usersOptional.get();
-            Set<Permissions> permissionsSet = permissionsDTONameSet.stream().map(t -> permissionRepository.findByPermissionName(t).get()).collect(Collectors.toSet());
+            Set<Permissions> permissionsSet = permissionsDTONameSet.stream().filter(t->permissionRepository.findByPermissionName(t).isPresent()&&!t.equals("ADMIN")).map(t -> permissionRepository.findByPermissionName(t).get()).collect(Collectors.toSet());
             Roles roles=new Roles("ROLE_modified", "Role of "+id);
             roles.setPermissions(permissionsSet);
             roles.setUsers(Arrays.asList(user).stream().collect(Collectors.toSet()));
@@ -73,5 +75,13 @@ public class PermissionServiceImp implements PermissionService {
         }
         else new ResponseStatusException(HttpStatus.NOT_FOUND, "Nott found Id=" + id);
         return null;
+    }
+
+    @Override
+    public List<IdAndPermissionDTO> getAllPermissionForUser() {
+        return userRepository.findAll().stream().map(
+                t->new IdAndPermissionDTO(t.getUsername(),getPermissionByID(t.getUsername())))
+                .collect(Collectors.toList());
+
     }
 }
