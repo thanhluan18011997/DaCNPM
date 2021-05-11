@@ -42,6 +42,7 @@ public class MoralServiceImp implements MoralService {
         HttpEntity<List<MoralsDTO>> entity = new HttpEntity<List<MoralsDTO>>(headers);
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("https://dnunigo.herokuapp.com/dut/")
                 .queryParam("command", "get_moral_result")
+                .queryParam("semester_id", "2020")
                 .queryParam("session_id", id);
         ResponseEntity<List<MoralsDTO>> responseEntity = restTemplate.exchange(
                 builder.toUriString(),
