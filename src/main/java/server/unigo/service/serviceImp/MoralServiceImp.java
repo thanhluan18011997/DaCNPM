@@ -70,6 +70,6 @@ public class MoralServiceImp implements MoralService {
         if (!personalInformations.isPresent())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found id");
         MoralMapper moralMapper = Mappers.getMapper(MoralMapper.class);
-        return moralRepository.findAll().stream().map(t -> moralMapper.mapEntityToDTo(t)).collect(Collectors.toList());
+        return moralRepository.findByMoralbyPersonalInformationId(id).get().stream().map(t -> moralMapper.mapEntityToDTo(t)).collect(Collectors.toList());
     }
 }
