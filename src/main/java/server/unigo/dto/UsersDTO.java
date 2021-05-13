@@ -12,4 +12,5 @@ import java.util.Set;
 public class UsersDTO {
     private String username;
     private String password;
+    private boolean block;
 }

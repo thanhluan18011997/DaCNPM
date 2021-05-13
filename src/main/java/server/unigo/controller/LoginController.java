@@ -29,14 +29,23 @@ public class LoginController {
     @PostMapping("/v1/login")
     public LoginOutput authenticateUser(@RequestBody UsersDTO usersDTO) {
         log.info("User with ID=" + usersDTO.getUsername() + " logining");
+
         try {
 
             Authentication authentication = userService.authentication(usersDTO);
             String jwt = tokenProvider.generateJwt((CustomUserDetail) authentication.getPrincipal());
+
             if (usersDTO.getUsername().equals("admin"))
                 return new LoginOutput(jwt, "admin");
-            else
-                return new LoginOutput(jwt, "user");
+            else{
+                if (userService.checkBlock(usersDTO.getUsername()).isBlock())
+                {
+                    LoginOutput loginOutput = new LoginOutput("", "");
+                    loginOutput.setStatus("Invalid");
+                    loginOutput.setBlock(true);
+                    return loginOutput;
+                }
+                return new LoginOutput(jwt, "user");}
 
 
         } catch (Exception e) {

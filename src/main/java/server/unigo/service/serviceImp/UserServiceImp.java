@@ -24,6 +24,7 @@ import server.unigo.service.*;
 
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -109,5 +110,31 @@ public class UserServiceImp implements UserService {
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return authentication;
+    }
+
+    @Override
+    public Users setBlock(String username,boolean status) {
+        Optional<Users> usersOptional = userRepository.findByUsername(username);
+        if (usersOptional.isPresent()) {
+            Users users = usersOptional.get();
+            users.setBlock(status);
+          return  userRepository.save(users);
+        }
+        return null;
+    }
+
+    @Override
+    public UsersDTO checkBlock(String username) {
+        UserMapper userMapper= Mappers.getMapper(UserMapper.class);
+        Users users = userRepository.findByUsername(username).get();
+        return userMapper.mapEntityToDTo(users);
+
+    }
+
+    @Override
+    public List<UsersDTO> getAllBlockUser() {
+        List<Users> usersList=userRepository.findAll().stream().filter(t->t.isBlock()).collect(Collectors.toList());
+        UserMapper userMapper=Mappers.getMapper(UserMapper.class);
+        return usersList.stream().map(t->userMapper.mapEntityToDTo(t)).collect(Collectors.toList());
     }
 }

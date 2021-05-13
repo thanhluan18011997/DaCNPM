@@ -1,5 +1,6 @@
 package server.unigo.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import server.unigo.dto.IdAndPermissionDTO;
@@ -13,10 +14,13 @@ import java.util.Set;
 public class PermissionController {
     private final PermissionService permissionService;
 
+    @Autowired
     public PermissionController(PermissionService permissionService) {
+
         this.permissionService = permissionService;
     }
-    @PreAuthorize("hasAnyAuthority('ADMIN_Authority')")
+
+    @PreAuthorize("hasAnyAuthority('READ_Permission')")
     @GetMapping("/v1/permissions/{id}")
     public Set<PermissionsDTO> getAllPermission(@PathVariable("id") String id) {
         return permissionService.getPermissionByID(id);
@@ -24,9 +28,10 @@ public class PermissionController {
 
     @PreAuthorize("hasAnyAuthority('ADMIN_Authority')")
     @GetMapping("/v1/permissions")
-    public List<IdAndPermissionDTO> getAllPermissionUSer(){
+    public List<IdAndPermissionDTO> getAllPermissionUSer() {
         return permissionService.getAllPermissionForUser();
     }
+
     @PreAuthorize("hasAnyAuthority('ADMIN_Authority')")
     @PutMapping("/v1/permissions/{id}")
     public Boolean modifiPermission(@RequestBody Set<String> PermissionNameList, @PathVariable("id") String id) {

@@ -12,6 +12,7 @@ import server.unigo.model.Permissions;
 import server.unigo.model.Roles;
 import server.unigo.model.Users;
 import server.unigo.repository.PermissionRepository;
+import server.unigo.repository.PersonalInformationRepository;
 import server.unigo.repository.RoleRepository;
 import server.unigo.repository.UserRepository;
 import server.unigo.service.PermissionService;
@@ -27,12 +28,14 @@ public class PermissionServiceImp implements PermissionService {
     private final PermissionRepository permissionRepository;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final PersonalInformationRepository personalInformationRepository;
 
     @Autowired
-    public PermissionServiceImp(PermissionRepository permissionRepository, UserRepository userRepository, RoleRepository roleRepository) {
+    public PermissionServiceImp(PermissionRepository permissionRepository, UserRepository userRepository, RoleRepository roleRepository, PersonalInformationRepository personalInformationRepository) {
         this.permissionRepository = permissionRepository;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.personalInformationRepository = personalInformationRepository;
     }
 
     @Override
@@ -70,8 +73,16 @@ public class PermissionServiceImp implements PermissionService {
         Optional<Users> usersOptional = userRepository.findByUsername(id);
         if (usersOptional.isPresent())
         {
-            return usersOptional.get().getRoles().stream().findFirst().get().getPermissions()
-                    .stream().map(t->permissionMapper.mapEntityToDTo(t)).collect(Collectors.toSet());
+            Set<PermissionsDTO> permissionsDTOSet = usersOptional.get().getRoles().stream().findFirst().get().getPermissions()
+                    .stream().map(t -> permissionMapper.mapEntityToDTo(t)).collect(Collectors.toSet());
+            permissionsDTOSet.forEach(t->
+            {if (personalInformationRepository.findByStudentId(id).isPresent()) {
+                t.setName(personalInformationRepository.findByStudentId(id).get().getStudentName());
+                t.setImageUrl(personalInformationRepository.findByStudentId(id).get().getPersonalImage());
+            }
+            });
+
+            return permissionsDTOSet;
         }
         else new ResponseStatusException(HttpStatus.NOT_FOUND, "Nott found Id=" + id);
         return null;
@@ -79,9 +90,10 @@ public class PermissionServiceImp implements PermissionService {
 
     @Override
     public List<IdAndPermissionDTO> getAllPermissionForUser() {
-        return userRepository.findAll().stream().map(
-                t->new IdAndPermissionDTO(t.getUsername(),getPermissionByID(t.getUsername())))
+        List<IdAndPermissionDTO> idAndPermissionDTOList = userRepository.findAll().stream().map(
+                t -> new IdAndPermissionDTO(t.getUsername(), getPermissionByID(t.getUsername())))
                 .collect(Collectors.toList());
+        return idAndPermissionDTOList;
 
     }
 }

@@ -16,4 +16,6 @@ import java.util.Set;
 public class PermissionsDTO  {
     private String permission;
     private String permissionName;
+    private String name;
+    private String imageUrl;
 }

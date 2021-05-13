@@ -16,6 +16,8 @@ import java.util.Set;
 public class Users extends BaseEntity {
     private String username;
     private String password;
+    private boolean block=false;
+
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role",joinColumns = @JoinColumn(name = "user_id"),
