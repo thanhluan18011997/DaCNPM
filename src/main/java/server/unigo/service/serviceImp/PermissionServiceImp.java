@@ -9,6 +9,7 @@ import server.unigo.dto.IdAndPermissionDTO;
 import server.unigo.dto.PermissionsDTO;
 import server.unigo.map.PermissionMapper;
 import server.unigo.model.Permissions;
+import server.unigo.model.PersonalInformations;
 import server.unigo.model.Roles;
 import server.unigo.model.Users;
 import server.unigo.repository.PermissionRepository;
@@ -75,14 +76,24 @@ public class PermissionServiceImp implements PermissionService {
         {
             Set<PermissionsDTO> permissionsDTOSet = usersOptional.get().getRoles().stream().findFirst().get().getPermissions()
                     .stream().map(t -> permissionMapper.mapEntityToDTo(t)).collect(Collectors.toSet());
-            permissionsDTOSet.forEach(t->
-            {if (personalInformationRepository.findByStudentId(id).isPresent()) {
-                t.setName(personalInformationRepository.findByStudentId(id).get().getStudentName());
-                t.setImageUrl(personalInformationRepository.findByStudentId(id).get().getPersonalImage());
+
+            Set<PermissionsDTO>permissionsDTOSet1=permissionsDTOSet.stream().filter(x->(x.getPermissionName().equals("Điẻm")
+                    ||(x.getPermissionName().equals("Lịch hoc"))
+                    ||(x.getPermissionName().equals("Lịch thi"))
+                    || (x.getPermissionName().equals("KQ HTRL"))))
+                    .collect(Collectors.toSet());
+
+            permissionsDTOSet1.  forEach(t->
+            {
+                Optional<PersonalInformations> personalInformations=personalInformationRepository.findByStudentId(id);
+                if (personalInformations.isPresent()) {
+                t.setName(personalInformations.get().getStudentName());
+                t.setImageUrl(personalInformations.get().getPersonalImage());
+                t.setBlock(userRepository.findByUsername(id).get().isBlock());
             }
             });
 
-            return permissionsDTOSet;
+            return permissionsDTOSet1;
         }
         else new ResponseStatusException(HttpStatus.NOT_FOUND, "Nott found Id=" + id);
         return null;

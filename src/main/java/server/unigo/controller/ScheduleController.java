@@ -26,7 +26,7 @@ public class ScheduleController {
 
     //  Get Schedule data for client
     @GetMapping("v1/schedules/{id}")
-    @PreAuthorize("hasAnyAuthority('READ_Schedule')")
+    @PreAuthorize("hasAnyAuthority('READ_Lịch hoc')")
     public List<SchedulesDTO> getSchedule(@PathVariable String id, Authentication authentication) {
         log.info("User with ID="+id+" requested to v1/schedules/ to getSchedule");
         CustomUserDetail customUserDetail=(CustomUserDetail)authentication.getPrincipal();

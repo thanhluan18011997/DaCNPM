@@ -26,7 +26,7 @@ public class StudyResultController {
 
     //  Get StudyResults data for client
     @GetMapping("v1/study_result/{id}")
-    @PreAuthorize("hasAnyAuthority('READ_StudyResult')")
+    @PreAuthorize("hasAnyAuthority('READ_Điẻm')")
     public List<StudyResultsDTO> getStudyResults(@PathVariable("id") String id,Authentication authentication){
     log.info("User with ID="+id+" requested to v1/study_result/ to getStudyResults");
         CustomUserDetail customUserDetail=(CustomUserDetail)authentication.getPrincipal();
@@ -38,7 +38,7 @@ public class StudyResultController {
 
     //  Get StudyResults data for client
     @GetMapping("v1/study_result/{id}/{courseName}")
-    @PreAuthorize("hasAnyAuthority('READ_StudyResult')")
+    @PreAuthorize("hasAnyAuthority('READ_Điẻm')")
     public List<StudyResultsDTO> getStudyResultsByName(@PathVariable("id") String id, @PathVariable("courseName") String courseName, Authentication authentication){
         log.info("User with ID="+id+" requested to v1/study_result/ to getStudyResultsByName");
         CustomUserDetail customUserDetail=(CustomUserDetail)authentication.getPrincipal();

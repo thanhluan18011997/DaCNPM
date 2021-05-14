@@ -26,7 +26,7 @@ public class MoralController {
 
     //  Get student moral data for client
     @GetMapping("v1/morals/{id}")
-    @PreAuthorize("hasAnyAuthority('READ_Moral')")
+    @PreAuthorize("hasAnyAuthority('READ_KQ HTRL')")
     public List<MoralsDTO> getMoral(@PathVariable String id, Authentication authentication) {
         log.info("User with ID="+id+" requested to v1/morals/ to getMoral");
         CustomUserDetail customUserDetail=(CustomUserDetail)authentication.getPrincipal();

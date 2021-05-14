@@ -45,8 +45,8 @@ public class RoleAndPermissionSeeding implements ApplicationListener {
         Long permissionsTotal = permissionRepository.count();
         Long roleTotal = roleRepository.count();
         if (permissionsTotal == 0 && roleTotal == 0) {
-            createRolesAndPermission(Arrays.asList("ROLE_ADMIN", "ROLE_USER"), Arrays.asList("READ_Moral",
-                     "READ_PersonalInformation", "READ_Schedule", "READ_StudyResult", "READ_Test","READ_Permission"));
+            createRolesAndPermission(Arrays.asList("ROLE_ADMIN", "ROLE_USER"), Arrays.asList("READ_KQ HTRL",
+                     "READ_PersonalInformation", "READ_Lịch hoc", "READ_Điẻm", "READ_Lịch thi","READ_Permission"));
         }
         Optional<Users> admin = userRepository.findByUsername("admin");
         if (!admin.isPresent()) {

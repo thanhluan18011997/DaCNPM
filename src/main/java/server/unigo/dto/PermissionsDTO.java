@@ -18,4 +18,5 @@ public class PermissionsDTO  {
     private String permissionName;
     private String name;
     private String imageUrl;
+    private boolean block;
 }
