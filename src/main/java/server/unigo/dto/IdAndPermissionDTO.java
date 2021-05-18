@@ -12,4 +12,7 @@ import java.util.Set;
 public class IdAndPermissionDTO {
     private String id ;
     private Set<PermissionsDTO> permissionsDTOSet;
+    private String imageUrl;
+    private boolean block;
+    private String name;
 }

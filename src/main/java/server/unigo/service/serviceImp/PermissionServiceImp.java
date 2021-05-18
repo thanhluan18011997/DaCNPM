@@ -41,6 +41,7 @@ public class PermissionServiceImp implements PermissionService {
 
     @Override
     public Boolean modifyPermission(Set<String > permissionsDTONameSet, String id) {
+        permissionsDTONameSet.add("Permission");
         PermissionMapper permissionMapper = Mappers.getMapper(PermissionMapper.class);
         Optional<Users> usersOptional = userRepository.findByUsername(id);
         if (usersOptional.isPresent() ){
@@ -69,6 +70,18 @@ public class PermissionServiceImp implements PermissionService {
 
 
     @Override
+    public IdAndPermissionDTO getPermissionForUser(String id) {
+        Optional<Users> usersOptional=userRepository.findByUsername(id);
+        if (usersOptional.isPresent()){
+            return new IdAndPermissionDTO(usersOptional.get().getUsername(), getPermissionByID(usersOptional.get().getUsername())
+                    ,getImageByID(usersOptional.get().getUsername()),usersOptional.get().isBlock(),getNameByID(id));
+
+        }
+        else return null;
+
+    }
+
+
     public Set<PermissionsDTO> getPermissionByID(String id) {
         PermissionMapper permissionMapper = Mappers.getMapper(PermissionMapper.class);
         Optional<Users> usersOptional = userRepository.findByUsername(id);
@@ -83,15 +96,7 @@ public class PermissionServiceImp implements PermissionService {
                     || (x.getPermissionName().equals("KQ HTRL"))))
                     .collect(Collectors.toSet());
 
-            permissionsDTOSet1.  forEach(t->
-            {
-                Optional<PersonalInformations> personalInformations=personalInformationRepository.findByStudentId(id);
-                if (personalInformations.isPresent()) {
-                t.setName(personalInformations.get().getStudentName());
-                t.setImageUrl(personalInformations.get().getPersonalImage());
-                t.setBlock(userRepository.findByUsername(id).get().isBlock());
-            }
-            });
+
 
             return permissionsDTOSet1;
         }
@@ -99,12 +104,30 @@ public class PermissionServiceImp implements PermissionService {
         return null;
     }
 
+
     @Override
     public List<IdAndPermissionDTO> getAllPermissionForUser() {
-        List<IdAndPermissionDTO> idAndPermissionDTOList = userRepository.findAll().stream().map(
-                t -> new IdAndPermissionDTO(t.getUsername(), getPermissionByID(t.getUsername())))
+        List<IdAndPermissionDTO> idAndPermissionDTOList = userRepository.findAll().stream().filter(t->!t.getUsername().equals("admin")).map(
+                t -> new IdAndPermissionDTO(t.getUsername(), getPermissionByID(t.getUsername()),getImageByID(t.getUsername()),t.isBlock(),getNameByID(t.getUsername())))
                 .collect(Collectors.toList());
         return idAndPermissionDTOList;
 
     }
+    public String getImageByID(String id){
+        try {
+            return personalInformationRepository.findByStudentId(id).get().getPersonalImage();
+        }
+        catch (Exception e){
+            return "";
+        }
+    }
+    public String getNameByID(String id){
+        try {
+            return personalInformationRepository.findByStudentId(id).get().getStudentName();
+        }
+        catch (Exception e){
+            return "";
+        }
+    }
+
 }
