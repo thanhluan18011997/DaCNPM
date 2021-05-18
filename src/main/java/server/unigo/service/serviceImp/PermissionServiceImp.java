@@ -90,7 +90,7 @@ public class PermissionServiceImp implements PermissionService {
             Set<PermissionsDTO> permissionsDTOSet = usersOptional.get().getRoles().stream().findFirst().get().getPermissions()
                     .stream().map(t -> permissionMapper.mapEntityToDTo(t)).collect(Collectors.toSet());
 
-            Set<PermissionsDTO>permissionsDTOSet1=permissionsDTOSet.stream().filter(x->(x.getPermissionName().equals("Điẻm")
+            Set<PermissionsDTO>permissionsDTOSet1=permissionsDTOSet.stream().filter(x->(x.getPermissionName().equals("Điểm")
                     ||(x.getPermissionName().equals("Lịch học"))
                     ||(x.getPermissionName().equals("Lịch thi"))
                     || (x.getPermissionName().equals("KQ HTRL"))))
