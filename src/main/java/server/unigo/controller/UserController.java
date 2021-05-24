@@ -2,6 +2,7 @@ package server.unigo.controller;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import server.unigo.dto.BlockStatus;
 import server.unigo.dto.UsersDTO;
 import server.unigo.service.UserService;
 
@@ -17,8 +18,8 @@ public class UserController {
     }
     @PreAuthorize("hasAnyAuthority('ADMIN_Authority')")
     @PutMapping("/v1/BlockUser/{id}")
-    public boolean setBlockUser(@PathVariable("id") String id,@RequestBody Boolean status) {
-      if (userService.setBlock(id,status)!=null)
+    public boolean setBlockUser(@PathVariable("id") String id, @RequestBody BlockStatus blockStatus) {
+      if (userService.setBlock(id,blockStatus.getStatus())!=null)
           return true;
       return false;
     }
