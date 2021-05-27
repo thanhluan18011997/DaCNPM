@@ -41,7 +41,7 @@ public class LoginController {
                 if (userService.checkBlock(usersDTO.getUsername()).isBlock())
                 {
                     LoginOutput loginOutput = new LoginOutput("", "");
-                    loginOutput.setStatus("Invalid");
+                    loginOutput.setStatus("Ok");
                     loginOutput.setBlock(true);
                     return loginOutput;
                 }
