@@ -11,7 +11,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @Entity
-public class PersonalInformations  {
+public class PersonalInformations {
     private String studentName;
     @Id
     private String studentId;
@@ -23,13 +23,15 @@ public class PersonalInformations  {
     private String medicalId;
     private String medicalIdEnd;
     private String personalImage;
-    @OneToMany(mappedBy = "personalInformation",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "personalInformation", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Schedules> schedulesSet;
-    @OneToMany(mappedBy = "personalInformation",cascade = CascadeType.ALL ,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "personalInformation", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Friends> friendsSet;
+    @OneToMany(mappedBy = "personalInformation", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Tests> testsSet;
-     @OneToMany(mappedBy = "personalInformation",cascade = CascadeType.ALL ,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "personalInformation", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<StudyResults> studyResultsSet;
-    @OneToOne(mappedBy = "personalInformation",fetch = FetchType.LAZY )
+    @OneToOne(mappedBy = "personalInformation", fetch = FetchType.LAZY)
     @Transient
     private Morals moral;
     @OneToOne(fetch = FetchType.LAZY)

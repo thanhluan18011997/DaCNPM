@@ -40,14 +40,14 @@ public class PermissionServiceImp implements PermissionService {
     }
 
     @Override
-    public Boolean modifyPermission(Set<String > permissionsDTONameSet, String id) {
+    public Boolean modifyPermission(Set<String> permissionsDTONameSet, String id) {
         permissionsDTONameSet.add("Permission");
         PermissionMapper permissionMapper = Mappers.getMapper(PermissionMapper.class);
         Optional<Users> usersOptional = userRepository.findByUsername(id);
-        if (usersOptional.isPresent() ){
-            Users user=usersOptional.get();
-            Set<Permissions> permissionsSet = permissionsDTONameSet.stream().filter(t->permissionRepository.findByPermissionName(t).isPresent()&&!t.equals("ADMIN")).map(t -> permissionRepository.findByPermissionName(t).get()).collect(Collectors.toSet());
-            Roles roles=new Roles("ROLE_modified", "Role of "+id);
+        if (usersOptional.isPresent()) {
+            Users user = usersOptional.get();
+            Set<Permissions> permissionsSet = permissionsDTONameSet.stream().filter(t -> permissionRepository.findByPermissionName(t).isPresent() && !t.equals("ADMIN")).map(t -> permissionRepository.findByPermissionName(t).get()).collect(Collectors.toSet());
+            Roles roles = new Roles("ROLE_modified", "Role of " + id);
             roles.setPermissions(permissionsSet);
             roles.setUsers(Arrays.asList(user).stream().collect(Collectors.toSet()));
             roleRepository.save(roles);
@@ -55,8 +55,7 @@ public class PermissionServiceImp implements PermissionService {
             userRepository.save(user);
             return true;
 
-        }
-        else new ResponseStatusException(HttpStatus.NOT_FOUND, "Nott found " + id);
+        } else new ResponseStatusException(HttpStatus.NOT_FOUND, "Nott found " + id);
         return false;
     }
 
@@ -71,13 +70,12 @@ public class PermissionServiceImp implements PermissionService {
 
     @Override
     public IdAndPermissionDTO getPermissionForUser(String id) {
-        Optional<Users> usersOptional=userRepository.findByUsername(id);
-        if (usersOptional.isPresent()){
+        Optional<Users> usersOptional = userRepository.findByUsername(id);
+        if (usersOptional.isPresent()) {
             return new IdAndPermissionDTO(usersOptional.get().getUsername(), getPermissionByID(usersOptional.get().getUsername())
-                    ,getImageByID(usersOptional.get().getUsername()),usersOptional.get().isBlock(),getNameByID(id));
+                    , getImageByID(usersOptional.get().getUsername()), usersOptional.get().isBlock(), getNameByID(id));
 
-        }
-        else return null;
+        } else return null;
 
     }
 
@@ -85,47 +83,47 @@ public class PermissionServiceImp implements PermissionService {
     public Set<PermissionsDTO> getPermissionByID(String id) {
         PermissionMapper permissionMapper = Mappers.getMapper(PermissionMapper.class);
         Optional<Users> usersOptional = userRepository.findByUsername(id);
-        if (usersOptional.isPresent())
-        {
+        if (usersOptional.isPresent()) {
             Set<PermissionsDTO> permissionsDTOSet = usersOptional.get().getRoles().stream().findFirst().get().getPermissions()
                     .stream().map(t -> permissionMapper.mapEntityToDTo(t)).collect(Collectors.toSet());
 
-            Set<PermissionsDTO>permissionsDTOSet1=permissionsDTOSet.stream().filter(x->(x.getPermissionName().equals("Điểm")
-                    ||(x.getPermissionName().equals("Lịch học"))
-                    ||(x.getPermissionName().equals("Lịch thi"))
-                    || (x.getPermissionName().equals("KQ HTRL"))))
+            Set<PermissionsDTO> permissionsDTOSet1 = permissionsDTOSet.stream().filter(x -> (x.getPermissionName().equals("Điểm")
+                            || (x.getPermissionName().equals("Lịch học"))
+                            || (x.getPermissionName().equals("Lịch thi"))
+                            || (x.getPermissionName().equals("KQ HTRL"))
+                            || (x.getPermissionName().equals("collaborator"))
+                            || (x.getPermissionName().equals("semester"))
+                            || (x.getPermissionName().equals("class"))))
                     .collect(Collectors.toSet());
 
 
-
             return permissionsDTOSet1;
-        }
-        else new ResponseStatusException(HttpStatus.NOT_FOUND, "Nott found Id=" + id);
+        } else new ResponseStatusException(HttpStatus.NOT_FOUND, "Nott found Id=" + id);
         return null;
     }
 
 
     @Override
     public List<IdAndPermissionDTO> getAllPermissionForUser() {
-        List<IdAndPermissionDTO> idAndPermissionDTOList = userRepository.findAll().stream().filter(t->!t.getUsername().equals("admin")).map(
-                t -> new IdAndPermissionDTO(t.getUsername(), getPermissionByID(t.getUsername()),getImageByID(t.getUsername()),t.isBlock(),getNameByID(t.getUsername())))
+        List<IdAndPermissionDTO> idAndPermissionDTOList = userRepository.findAll().stream().filter(t -> !t.getUsername().equals("admin")).map(
+                        t -> new IdAndPermissionDTO(t.getUsername(), getPermissionByID(t.getUsername()), getImageByID(t.getUsername()), t.isBlock(), getNameByID(t.getUsername())))
                 .collect(Collectors.toList());
         return idAndPermissionDTOList;
 
     }
-    public String getImageByID(String id){
+
+    public String getImageByID(String id) {
         try {
             return personalInformationRepository.findByStudentId(id).get().getPersonalImage();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return "";
         }
     }
-    public String getNameByID(String id){
+
+    public String getNameByID(String id) {
         try {
             return personalInformationRepository.findByStudentId(id).get().getStudentName();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return "";
         }
     }

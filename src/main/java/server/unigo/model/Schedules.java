@@ -1,12 +1,11 @@
 package server.unigo.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import server.unigo.dto.WeeklySchedulesDTO;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -21,6 +20,19 @@ public class Schedules extends BaseEntity {
     private String studyWeeks;
     @ManyToOne()
     private PersonalInformations personalInformation;
+    @ManyToOne()
+    private Semesters semester;
     @OneToOne(mappedBy = "schedules",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private WeeklySchedules weeklySchedules;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "schedule_collaborator",joinColumns = @JoinColumn(name="id_schedule"),inverseJoinColumns = @JoinColumn(name="id_collaborator"))
+    private Set<Collaborators>collaborators;
+    public Schedules(Long index_, String courseCode, String courseName, Double credit, String teacher, String studyWeeks){
+        this.index_=index_;
+        this.courseCode=courseCode;
+        this.courseName=courseName;
+        this.credit=credit;
+        this.teacher=teacher;
+        this.studyWeeks=studyWeeks;
+    }
 }

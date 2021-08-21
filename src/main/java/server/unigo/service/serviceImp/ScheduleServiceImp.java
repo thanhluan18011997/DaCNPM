@@ -27,15 +27,17 @@ public class ScheduleServiceImp implements ScheduleService {
     private final WeeklySchedulesRepository weeklySchedulesRepository;
     private final PersonalInformationRepository personalInformationRepository;
     private final StudyTimeRepository studyTimeRepository;
+    private final SemesterRepository semesterRepository;
 
     @Autowired
-    public ScheduleServiceImp(ScheduleRepository scheduleRepository, DetailScheduleRepository detailScheduleRepository, RestTemplate restTemplate, WeeklySchedulesRepository weeklySchedulesRepository, PersonalInformationRepository personalInformationRepository, StudyTimeRepository studyTimeRepository) {
+    public ScheduleServiceImp(ScheduleRepository scheduleRepository, DetailScheduleRepository detailScheduleRepository, RestTemplate restTemplate, WeeklySchedulesRepository weeklySchedulesRepository, PersonalInformationRepository personalInformationRepository, StudyTimeRepository studyTimeRepository, SemesterRepository semesterRepository) {
         this.scheduleRepository = scheduleRepository;
         this.detailScheduleRepository = detailScheduleRepository;
         this.restTemplate = restTemplate;
         this.weeklySchedulesRepository = weeklySchedulesRepository;
         this.personalInformationRepository = personalInformationRepository;
         this.studyTimeRepository = studyTimeRepository;
+        this.semesterRepository = semesterRepository;
     }
 
     //when using generic, appear cast error :" return hash map instead of json "
@@ -44,84 +46,97 @@ public class ScheduleServiceImp implements ScheduleService {
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
         HttpEntity<List<SchedulesDTO>> entity = new HttpEntity<List<SchedulesDTO>>(headers);
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("https://dnunigo.herokuapp.com/dut/")
-                .queryParam("command", "get_schedule")
-                .queryParam("session_id", id)
-                .queryParam("semester_id", "2020");
-        ResponseEntity<List<SchedulesDTO>> responseEntity = restTemplate.exchange(
-                builder.toUriString(),
-                HttpMethod.POST,
-                entity,
-                new ParameterizedTypeReference<List<SchedulesDTO>>() {
-                });
-        List<SchedulesDTO> schedulesDTOList = responseEntity.getBody();
-        DetailScheduleMapper detailScheduleMapper = Mappers.getMapper(DetailScheduleMapper.class);
-        WeeklyScheduleMapper weeklyScheduleMapper = Mappers.getMapper(WeeklyScheduleMapper.class);
-
-        for (SchedulesDTO schedulesDTO : schedulesDTOList) {
-            Set<DetailSchedules> detailSchedulesSet = new HashSet<>();
-            for (DetailSchedulesDTO detailSchedulesDTO : schedulesDTO.getWeeklySchedule().getDetailSchedules()) {
-                Set<StudyTimes> studyTimesSet = new HashSet<>();
-                for (StudyTimesDTO studyTimesDTO : detailSchedulesDTO.getStudyTime()) {
-                    StudyTimeMapper studyTimeMapper = Mappers.getMapper(StudyTimeMapper.class);
-                    StudyTimes studyTimes = studyTimeMapper.mapDTOtoEntity(studyTimesDTO);
-                    studyTimesSet.add(studyTimes);
+        semesterRepository.findAll().forEach(semester -> {
+            UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("https://dnunigo.herokuapp.com/dut/")
+                    .queryParam("command", "get_schedule")
+                    .queryParam("session_id", id)
+                    .queryParam("semester_id", semester.getSemester_id());
+            ResponseEntity<List<SchedulesDTO>> responseEntity = restTemplate.exchange(
+                    builder.toUriString(),
+                    HttpMethod.POST,
+                    entity,
+                    new ParameterizedTypeReference<List<SchedulesDTO>>() {
+                    });
+            List<SchedulesDTO> schedulesDTOList = responseEntity.getBody();
+            DetailScheduleMapper detailScheduleMapper = Mappers.getMapper(DetailScheduleMapper.class);
+            WeeklyScheduleMapper weeklyScheduleMapper = Mappers.getMapper(WeeklyScheduleMapper.class);
+            Set<Schedules> schedulesSet = new HashSet<>();
+            for (SchedulesDTO schedulesDTO : schedulesDTOList) {
+                Set<DetailSchedules> detailSchedulesSet = new HashSet<>();
+                for (DetailSchedulesDTO detailSchedulesDTO : schedulesDTO.getWeeklySchedule().getDetailSchedules()) {
+                    Set<StudyTimes> studyTimesSet = new HashSet<>();
+                    for (StudyTimesDTO studyTimesDTO : detailSchedulesDTO.getStudyTime()) {
+                        StudyTimeMapper studyTimeMapper = Mappers.getMapper(StudyTimeMapper.class);
+                        StudyTimes studyTimes = studyTimeMapper.mapDTOtoEntity(studyTimesDTO);
+                        studyTimesSet.add(studyTimes);
+                    }
+                    DetailSchedules detailSchedules = detailScheduleMapper.mapDTOtoEntity(detailSchedulesDTO);
+                    detailSchedules.setStudyTime(studyTimesSet);
+                    detailSchedulesSet.add(detailSchedules);
                 }
-                DetailSchedules detailSchedules = detailScheduleMapper.mapDTOtoEntity(detailSchedulesDTO);
-                detailSchedules.setStudyTime(studyTimesSet);
-                detailSchedulesSet.add(detailSchedules);
-            }
-            WeeklySchedules weeklySchedules = weeklyScheduleMapper.mapDTOtoEntity(schedulesDTO.getWeeklySchedule());
-            weeklySchedules.setDetailSchedules(detailSchedulesSet);
-            ScheduleMapper scheduleMapper = Mappers.getMapper(ScheduleMapper.class);
-            server.unigo.model.Schedules schedules = scheduleMapper.mapDTOtoEntity(schedulesDTO);
-            PersonalInformations personalInformations = personalInformationRepository.findByStudentId(id).get();
-            schedules.setPersonalInformation(personalInformations);
-            Optional<Long> scheduleID = scheduleRepository.findScheduleIdByPersonalInformationAndCourseName(id, schedules.getCourseCode());
-            if (scheduleID.isPresent())
-                schedules.setId(scheduleID.get());
-            Schedules schedules1 = scheduleRepository.save(schedules);
-            Optional<Long> weeklySchedulesIdOptional = weeklySchedulesRepository.findIdBySchedulesId(schedules1.getId());
-            if (scheduleID.isPresent()) {
-                if (weeklySchedulesIdOptional.isPresent())
-                    weeklySchedules.setId(weeklySchedulesIdOptional.get());
-            }
-            weeklySchedules.setSchedules(schedules1);
-            WeeklySchedules weeklySchedules1 = weeklySchedulesRepository.save(weeklySchedules);
-            Optional<Long> detailSchedulesIdOptional = detailScheduleRepository.findIdByWeeklyScheduleId(weeklySchedules1.getId());
-            if (detailSchedulesIdOptional.isPresent()) {
+                WeeklySchedules weeklySchedules = weeklyScheduleMapper.mapDTOtoEntity(schedulesDTO.getWeeklySchedule());
+                weeklySchedules.setDetailSchedules(detailSchedulesSet);
+                ScheduleMapper scheduleMapper = Mappers.getMapper(ScheduleMapper.class);
+                server.unigo.model.Schedules schedules = scheduleMapper.mapDTOtoEntity(schedulesDTO);
+                PersonalInformations personalInformations = personalInformationRepository.findByStudentId(id).get();
+                schedules.setPersonalInformation(personalInformations);
+                Optional<Long> scheduleID = scheduleRepository.findScheduleIdByPersonalInformationAndCourseName(id, schedules.getCourseCode());
+                if (scheduleID.isPresent())
+                    schedules.setId(scheduleID.get());
+                Schedules schedules1 = scheduleRepository.save(schedules);
+                Optional<Long> weeklySchedulesIdOptional = weeklySchedulesRepository.findIdBySchedulesId(schedules1.getId());
+                if (scheduleID.isPresent()) {
+                    if (weeklySchedulesIdOptional.isPresent())
+                        weeklySchedules.setId(weeklySchedulesIdOptional.get());
+                }
+                weeklySchedules.setSchedules(schedules1);
+                WeeklySchedules weeklySchedules1 = weeklySchedulesRepository.save(weeklySchedules);
+                Optional<Long> detailSchedulesIdOptional = detailScheduleRepository.findIdByWeeklyScheduleId(weeklySchedules1.getId());
+                if (detailSchedulesIdOptional.isPresent()) {
+                    weeklySchedules1.getDetailSchedules().forEach(t -> {
+                        t.getStudyTime().forEach(t1 -> {
+                            studyTimeRepository.deleteIdByDetailSchedule(detailSchedulesIdOptional.get());
+                        });
+                    });
+                    detailScheduleRepository.deleteByWeeklyScheduleId(weeklySchedules1.getId());
+                }
+
                 weeklySchedules1.getDetailSchedules().forEach(t -> {
+                    t.setWeeklySchedule(weeklySchedules1);
+                    detailScheduleRepository.save(t);
                     t.getStudyTime().forEach(t1 -> {
-                        studyTimeRepository.deleteIdByDetailSchedule(detailSchedulesIdOptional.get());
+                        t1.setDetailSchedule(t);
+                        studyTimeRepository.save(t1);
                     });
                 });
-                detailScheduleRepository.deleteByWeeklyScheduleId(weeklySchedules1.getId());
+                schedules1.setWeeklySchedules(weeklySchedules1);
+                schedulesSet.add(schedules1);
             }
-
-            weeklySchedules1.getDetailSchedules().forEach(t -> {
-                t.setWeeklySchedule(weeklySchedules1);
-                detailScheduleRepository.save(t);
-                t.getStudyTime().forEach(t1 -> {
-                    t1.setDetailSchedule(t);
-                    studyTimeRepository.save(t1);
-                });
+            semester.setSchedulesSet(schedulesSet);
+            semesterRepository.save(semester);
+            schedulesSet.forEach(t -> {
+                t.setSemester(semester);
+                scheduleRepository.save(t);
             });
-            schedules1.setWeeklySchedules(weeklySchedules1);
-        }
+        });
+
     }
 
     @Override
-    public List<SchedulesDTO> getSchedule(String id) {
+    public List<SchedulesDTO> getSchedule(String id, String semesterId, String name) {
         Optional<PersonalInformations> personalInformations = personalInformationRepository.findByStudentId(id);
         DetailScheduleMapper detailScheduleMapper = Mappers.getMapper(DetailScheduleMapper.class);
         StudyTimeMapper studyTimeMapper = Mappers.getMapper(StudyTimeMapper.class);
         if (!personalInformations.isPresent())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found id");
         ScheduleMapper scheduleMapper = Mappers.getMapper(ScheduleMapper.class);
-        List<Schedules> schedulesList =scheduleRepository.findByPersonalInformationID(id).get();
-        List<SchedulesDTO> schedulesDTOList = schedulesList.stream()
-                .map(t -> scheduleMapper.mapEntityToDTo(t)).collect(Collectors.toList());
-        return scheduleRepository.findByPersonalInformationID(id).get().stream()
+        List<Schedules> schedulesList = new ArrayList<>();
+        if (semesterId != null) {
+            schedulesList = scheduleRepository.findByPersonalInformationIDAndSemester(id, semesterId).get();
+        } else if (name != null) {
+            schedulesList = scheduleRepository.findByPersonalInformationIDAndName(id, name).get();
+        } else return null;
+        return schedulesList.stream()
                 .map(t -> scheduleMapper.mapEntityToDTo(t)).collect(Collectors.toList());
     }
 }

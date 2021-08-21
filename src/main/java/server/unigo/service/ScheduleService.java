@@ -10,6 +10,6 @@ import java.util.Optional;
 
 public interface ScheduleService {
     public void saveSchedule(String id);
-    public List<SchedulesDTO> getSchedule(String id);
+    public List<SchedulesDTO> getSchedule(String id,String semesterId,String courseName);
 
 }

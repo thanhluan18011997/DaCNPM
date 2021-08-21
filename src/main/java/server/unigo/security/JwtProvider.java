@@ -16,12 +16,12 @@ public class JwtProvider {
                     .setSubject(userDetails.getUsers().getUsername())
                             .setIssuedAt(now)
                                     .setExpiration(expiryDate)
-                                    .signWith(SignatureAlgorithm.HS512, "LuanDZ")
+                                    .signWith(SignatureAlgorithm.HS512, "sbjkafjnkfjkfbjkdfjnasfjnafjnlasfjk")
                                     .compact();
     }
     public String getUsernameFromJWT(String token) {
         Claims claims = Jwts.parser()
-                .setSigningKey("LuanDZ")
+                .setSigningKey("sbjkafjnkfjkfbjkdfjnasfjnafjnlasfjk")
                 .parseClaimsJws(token)
                 .getBody();
 
@@ -29,7 +29,7 @@ public class JwtProvider {
     }
     public boolean validateToken(String authToken) {
         try {
-            Jwts.parser().setSigningKey("LuanDZ").parseClaimsJws(authToken);
+            Jwts.parser().setSigningKey("sbjkafjnkfjkfbjkdfjnasfjnafjnlasfjk").parseClaimsJws(authToken);
             return true;
         } catch (MalformedJwtException ex) {
             log.error("Invalid JWT token");
