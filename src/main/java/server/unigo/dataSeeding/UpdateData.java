@@ -63,7 +63,7 @@ public class UpdateData {
 
     @Async
 //    @Scheduled(fixedRate = 1800000, initialDelay = 10000)
-    @Scheduled(fixedRate = 600000, initialDelay = 20000)
+    @Scheduled(fixedRate = 600000, initialDelay = 40000)
     public void update() {
         System.out.println("update--------------------");
         log.info("update--------------------");
