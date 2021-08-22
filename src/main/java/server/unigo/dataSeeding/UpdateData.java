@@ -86,4 +86,25 @@ public class UpdateData {
         });
     }
 
+
+    @Async
+//    @Scheduled(fixedRate = 1800000, initialDelay = 10000)
+    @Scheduled(fixedRate = 60000000, initialDelay = 60000)
+    public void updateCourse() {
+        System.out.println("update--------------------");
+        log.info("update--------------------");
+        userRepository.findAll().forEach(t ->
+        {
+
+            UsersDTO usersDTO = new UsersDTO();
+            usersDTO.setUsername(t.getUsername());
+            usersDTO.setPassword(new String(Base64.getDecoder().decode(t.getPassword())));
+            if (userService.verifyUser(usersDTO).isStatus()&&!t.getUsername().equals("admin")) {
+                scheduleRepository.findAll().forEach(c->collaboratorService.saveCollaborator(c.getId()));
+            }
+
+
+        });
+    }
+
 }
